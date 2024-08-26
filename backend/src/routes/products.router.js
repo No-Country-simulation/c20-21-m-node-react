@@ -4,7 +4,6 @@ const app = Router();
 
 //  Traer todos los productos.
 app.get('/', async (req, res) => {
-
     try {
         res.json({
             status: "Exitoso."
@@ -14,8 +13,6 @@ app.get('/', async (req, res) => {
             status: "Falló."
         })
     }
-
-
 });
 
 //  Traer un producto por id.
@@ -29,7 +26,6 @@ app.get('/:id', async (req, res) => {
             status: "Falló."
         })
     }
-
 });
 
 // Crear un producto.
@@ -43,7 +39,6 @@ app.post('/', async (req, res) => {
             status: "Falló."
         })
     }
-
 });
 
 //  Modificar un producto.
@@ -57,7 +52,6 @@ app.put('/', async (req, res) => {
             status: "Falló."
         })
     }
-
 });
 
 // Eliminar un producto.
@@ -71,8 +65,6 @@ app.delete('/', async (req, res) => {
             status: "Falló."
         })
     }
-
 });
-
 
 export default app;
