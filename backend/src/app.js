@@ -5,8 +5,8 @@ import usersRoute from "./routes/users.router.js";
 import { config } from "./config.js";
 
 const PORT = config.port;
-const API_USER = process.env.api_user;
-const API_PASSWORD = process.env.api_password;
+const API_USER = config.api_user;
+const API_PASSWORD = config.api_password;
 const app = express();
 //  Middlewares
 app.use(express.json());
