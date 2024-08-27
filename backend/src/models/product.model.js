@@ -18,13 +18,14 @@ const productSchema = new mongoose.Schema({
     type: [String],
     required: false
   },
-  createdAt: {
-    type: Date,
+  category: {
+    type: String,
     required: true
   }
-});
+
+}, { timestamps: true });
 
 //   Plugin del paginate
 productSchema.plugin(mongoosePaginate);
 
-export const ProductModel  = mongoose.model("products", productSchema);
+export const ProductModel = mongoose.model("products", productSchema);
