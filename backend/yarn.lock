@@ -474,6 +474,11 @@ mongodb@6.7.0:
     bson "^6.7.0"
     mongodb-connection-string-url "^3.0.0"
 
+mongoose-paginate-v2@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.npmjs.org/mongoose-paginate-v2/-/mongoose-paginate-v2-1.8.3.tgz"
+  integrity sha512-Fkg9amsmtRkqUQ19kwOvw6XodkqXoySr82MkV5XPeD+1u/m68tWnDcz3xRwDPzlIsAr1ctx/4Rz/bnfD3PIJqQ==
+
 mongoose@^8.5.4:
   version "8.5.4"
   resolved "https://registry.npmjs.org/mongoose/-/mongoose-8.5.4.tgz"

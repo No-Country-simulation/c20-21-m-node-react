@@ -3,7 +3,7 @@ import { UserModel } from "../models/user.model.js";
 
 const app = Router();
 
-app.get("/", async (_, res) => {
+app.get("/", async (req, res) => {
   try {
     const users = await UserModel.find({});
     res.status(200).json(users);
