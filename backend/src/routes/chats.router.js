@@ -1,18 +1,12 @@
 import { Router } from "express";
-import { ChatModel } from "../models/chat.model.js";
 
 const app = Router();
 
-// Obtener chat por id
-app.get("/:id", async (req, res) => {
+// GET chat by id 🚧
+app.get("/:id", getChatById);
 
-});
-
-
-//  Agregar mensaje a chat por id.
-app.post("/:Id", async (req, res) => {
-
-});
+// POST create chat 🚧
+app.post("/", createChat);
 
 // No necesitamos eliminar ni editar mensajes para que sea mas sencillo.
 
