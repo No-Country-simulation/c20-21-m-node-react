@@ -21,6 +21,10 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true
+  },
+  ownerId: {
+    type: String,
+    required: false, //Esto hay que agregarlo como obligatorio >> true
   }
 
 }, { timestamps: true });
