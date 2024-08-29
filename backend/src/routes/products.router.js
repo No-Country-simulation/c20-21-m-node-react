@@ -1,70 +1,21 @@
 import { Router } from "express";
+import { getAllProducts, getProductById, createProduct, updateProductById, deleteProductById } from "../controllers/product.controllers.js";
 
 const app = Router();
 
-//  Traer todos los productos.
-app.get('/', async (req, res) => {
-    try {
-        res.json({
-            status: "Exitoso."
-        })
-    } catch (error) {
-        res.json({
-            status: "Falló."
-        })
-    }
-});
+// GET all products ✅
+app.get('/', getAllProducts);
 
-//  Traer un producto por id.
-app.get('/:id', async (req, res) => {
-    try {
-        res.json({
-            status: "Exitoso."
-        })
-    } catch (error) {
-        res.json({
-            status: "Falló."
-        })
-    }
-});
+// GET all products by id 🚧
+app.get('/:id', getProductById);
 
-// Crear un producto.
-app.post('/', async (req, res) => {
-    try {
-        res.json({
-            status: "Exitoso."
-        })
-    } catch (error) {
-        res.json({
-            status: "Falló."
-        })
-    }
-});
+// POST create product ✅
+app.post('/', createProduct);
 
-//  Modificar un producto.
-app.put('/', async (req, res) => {
-    try {
-        res.json({
-            status: "Exitoso."
-        })
-    } catch (error) {
-        res.json({
-            status: "Falló."
-        })
-    }
-});
+// PUT update product by id 🚧
+app.put('/:id', updateProductById);
 
-// Eliminar un producto.
-app.delete('/', async (req, res) => {
-    try {
-        res.json({
-            status: "Exitoso."
-        })
-    } catch (error) {
-        res.json({
-            status: "Falló."
-        })
-    }
-});
+// DELETE product by id 🚧
+app.delete('/:id', deleteProductById);
 
 export default app;

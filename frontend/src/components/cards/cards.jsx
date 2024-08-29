@@ -4,11 +4,11 @@ const Cards = ({ product }) => {
   return (
     <div className="cards">
       <img 
-        src="https://via.placeholder.com/150" 
-        alt="Producto"
-        style={{ width: '100%', height: 'auto' }} 
+        src={product.productImage ? product.productImage[0] : "https://via.placeholder.com/150"}
+        alt={product.title}
+         
       />
-      <h2>{product.name}</h2>
+      <h2>{product.title}</h2> 
       <p>Price: ${product.price}</p>
     </div>
   );
