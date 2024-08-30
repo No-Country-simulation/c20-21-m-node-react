@@ -1,4 +1,5 @@
 import { UserModel } from "../models/user.model.js";
+import { processImagesToBase64 } from "../utils/imageProcessor.js";
 
 export const getAllUsers = async (req, res) => {
   try {
