@@ -1,5 +1,16 @@
 import { Router } from "express";
-import { getAllUsers, getUserById, createUser, updateUser, deleteUser, loginUser } from "../controllers/user.controllers.js";
+import {
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+  loginUser,
+} from "../controllers/user.controllers.js";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const app = Router();
 
@@ -10,7 +21,7 @@ app.get("/", getAllUsers);
 app.get("/:id", getUserById);
 
 // POST create user ✅
-app.post("/", createUser);
+app.post("/", upload.array("image"), createUser);
 
 // UPDATE user by me 🚧
 app.put("/", updateUser);
