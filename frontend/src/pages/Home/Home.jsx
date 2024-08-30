@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Cards from '../../components/cards/cards';
+import Card from '../../components/card/card';
 
 export const Home = () => {
   const [products, setProducts] = useState([]);
@@ -22,7 +22,7 @@ export const Home = () => {
       <h1>Marketplace</h1>
       <div className="product-list">
         {products.map(product => (
-          <Cards key={product._id} product={product} />  
+          <Card key={product._id} product={product} />  
         ))}
       </div>
     </div>
