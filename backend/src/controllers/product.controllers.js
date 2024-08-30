@@ -1,4 +1,5 @@
 import { ProductModel } from "../models/product.model.js";
+import { processImagesToBase64 } from "../utils/imageProcessor.js";
 
 
 export const getAllProducts = async (req, res) => {
@@ -72,13 +73,15 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
 
   try {
-    const { title, price, description, productImage, category } = req.body;
+    const { title, price, description, category } = req.body;
+    const productImage = await req.files.map(file => file.buffer)
+    const processedImages = await processImagesToBase64(productImage)
     if (!title || !description || !productImage || !price || !category) {
       return res.status(400).json({
         status: "error", message: "Debe ingresar todos los campos."
       })
     }
-    const product = await ProductModel.create({ title, price, description, productImage, category })
+    const product = await ProductModel.create({ title, price, description, productImage:processedImages, category })
     res.status(201).json({
       status: "success", message: "El producto ha sido creado", data: product
     });
