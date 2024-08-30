@@ -1,7 +1,14 @@
 import { Router } from "express";
-import { getAllProducts, getProductById, createProduct, updateProductById, deleteProductById } from "../controllers/product.controllers.js";
-import multer from 'multer'
+import {
+    getAllProducts,
+    getProductById,
+    createProduct,
+    updateProductById,
+    deleteProductById
+} from "../controllers/product.controllers.js";
+import multer from 'multer';
 
+// Middleware
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const app = Router();
