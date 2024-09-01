@@ -1,4 +1,8 @@
 import { Router } from "express";
+import {
+    getChatById,
+    createChat
+} from "../controllers/chat.controllers.js"
 
 const app = Router();
 
