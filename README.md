@@ -46,4 +46,4 @@ Este proyecto es un marketplace desarrollado con **React.js** en el frontend y *
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/mar%C3%ADa-bel%C3%A9n-aguirre/
 ) **Belén Aguirre** - Fronted Developer
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/abraham-garcia-mejia-a15801258 
-) **Belén Aguirre** - Fronted Developer
+) **Abraham Garcia** - Fronted Developer
