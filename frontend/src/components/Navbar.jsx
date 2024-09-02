@@ -12,9 +12,9 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
+// import SearchIcon from '@mui/icons-material/Search';
+// import { styled, alpha } from '@mui/material/styles';
+// import InputBase from '@mui/material/InputBase';
 
 const NavBar = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -135,7 +135,7 @@ const NavBar = () => {
             >
               MUI
             </Typography>
-            <Search>
+            {/* <SearchIcon>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -143,7 +143,7 @@ const NavBar = () => {
                 placeholder="Search…"
                 inputProps={{ 'aria-label': 'search' }}
               />
-            </Search>
+            </SearchIcon> */}
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <IconButton size="large" aria-label="show 4 new mails" color="inherit">
