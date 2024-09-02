@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from '../../components/card/card';
 import NavBar from '../../components/Navbar';
 
@@ -21,7 +21,7 @@ export const Home = () => {
   return (
     <div className="home">
       <div>
-       <Navbar/>
+       <NavBar/>
       </div>
       <h1>Marketplace</h1>
       <div className="product-list">
