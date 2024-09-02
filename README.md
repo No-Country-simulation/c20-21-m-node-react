@@ -7,11 +7,7 @@ Este proyecto es un marketplace desarrollado con **React.js** en el frontend y *
 ## Tabla de Contenidos
 
 - [Características Principales](#características-principales)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Contribución](#contribución)
-- [Licencia](#licencia)
+- [Equipo](#equipo)
 
 ## Características Principales
 
