@@ -41,7 +41,7 @@ Este proyecto es un marketplace desarrollado con **React.js** en el frontend y *
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/benjamin-peyraga-53812a163/
 ) **Benjamín Peyraga** - Backend Developer
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/selena-aldana
-) **Nombre Usuario 2** - Backend Developer
+) **Lizbeth Selena Aldana Tarifeño** - Backend Developer
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/nombre-usuario3) **Nicolás Ramos** - Backend Developer
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/mar%C3%ADa-bel%C3%A9n-aguirre/
 ) **Belén Aguirre** - Fronted Developer
