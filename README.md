@@ -35,3 +35,15 @@ Este proyecto es un marketplace desarrollado con **React.js** en el frontend y *
 ### 5. Publicación de Productos
    - **Subida de Productos**: Los vendedores pueden publicar nuevos productos con fotos, descripciones y precios.
    - **Gestión de Inventario**: Los vendedores también pueden gestionar su inventario, actualizando la disponibilidad y los detalles de los productos.
+
+## Equipo
+
+- [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/benjamin-peyraga-53812a163/
+) **Benjamín Peyraga** - Backend Developer
+- [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/selena-aldana
+) **Nombre Usuario 2** - Backend Developer
+- [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/nombre-usuario3) **Nicolás Ramos** - Backend Developer
+- [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/mar%C3%ADa-bel%C3%A9n-aguirre/
+) **Belén Aguirre** - Fronted Developer
+- [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0077B5?logo=linkedin&style=social)](https://www.linkedin.com/in/abraham-garcia-mejia-a15801258 
+) **Belén Aguirre** - Fronted Developer
