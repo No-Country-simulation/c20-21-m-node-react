@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Card from '../../components/card/card';
+import NavBar from '../../components/Navbar';
 
 export const Home = () => {
   const [products, setProducts] = useState([]);
@@ -19,6 +20,9 @@ export const Home = () => {
 
   return (
     <div className="home">
+      <div>
+       <Navbar/>
+      </div>
       <h1>Marketplace</h1>
       <div className="product-list">
         {products.map(product => (
