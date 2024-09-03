@@ -83,6 +83,7 @@ export const createProduct = async (req, res, next) => {
     const images = Array.isArray(req.files.productImage)
       ? req.files.productImage
       : [req.files.productImage];
+
     const uploadedImages = await Promise.all(
       images.map(async (file) => {
         const result = await uploadImages(file.tempFilePath);
@@ -90,6 +91,7 @@ export const createProduct = async (req, res, next) => {
         return result;
       })
     );
+    
     req.body.productImage = uploadedImages.map((image) => ({
       public_id: image.public_id,
       secure_url: image.secure_url,
