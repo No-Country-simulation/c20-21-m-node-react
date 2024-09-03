@@ -20,7 +20,7 @@ app.get("/:productId", getProductById);
 app.post("/", uploadImages, createProduct);
 
 // PUT update product by id ✅ TODO > add middleware: auth, owner
-app.put("/:productId", updateProductById);
+app.put("/:productId",uploadImages, updateProductById);
 
 // DELETE product by id ✅ TODO > add middleware: auth, owner | admin
 app.delete("/:productId", deleteProductById);

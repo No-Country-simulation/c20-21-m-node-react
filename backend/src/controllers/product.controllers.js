@@ -1,5 +1,5 @@
 import { ProductModel } from "../models/product.model.js";
-import { uploadImages } from "../utils/cloudinary.util.js";
+import { uploadImages, deleteImage } from "../utils/cloudinary.util.js";
 import fs from "fs-extra";
 
 export const getAllProducts = async (req, res) => {
@@ -80,18 +80,21 @@ export const createProduct = async (req, res, next) => {
         message: "No se ha recibido una imagen para subir.",
       });
     }
+    //Crea un array de images, si se sube solo un archivo se mantendrá el formato de array []
     const images = Array.isArray(req.files.productImage)
       ? req.files.productImage
       : [req.files.productImage];
 
+    //Devuelve un conjunto de promesas donde cada file(imagen subida) que se encuentra en un archivo temporal, se subirá al servicio cloudinary
     const uploadedImages = await Promise.all(
       images.map(async (file) => {
         const result = await uploadImages(file.tempFilePath);
+        //fs.unlink sirve para eliminar el archivo temporal creado en nuestro servidor
         await fs.unlink(file.tempFilePath);
         return result;
       })
     );
-    
+    //Devuelve en req.body.productId un array de objetos con las propiedades public_id y secure_url 
     req.body.productImage = uploadedImages.map((image) => ({
       public_id: image.public_id,
       secure_url: image.secure_url,
@@ -107,7 +110,7 @@ export const createProduct = async (req, res, next) => {
       title,
       price,
       description,
-      productImage: req.body.productImage,
+      productImage: req.body.productImage, //Guarda las imagenes con sus respectivas propiedades public_id y secure_url 
       category,
     });
     res.status(201).json({
@@ -123,11 +126,48 @@ export const createProduct = async (req, res, next) => {
 export const updateProductById = async (req, res) => {
   try {
     const { productId } = req.params;
-    const updates = req.body;
-    console.log(productId, updates);
-    const updatedProduct = await ProductModel.findOneAndUpdate(
-      { _id: productId },
-      updates,
+    const { title, price, description, category } = req.body;
+
+    const existingProduct = await ProductModel.findById(productId);
+    if (!existingProduct) {
+      return res.status(404).json({
+        status: "error",
+        message: "Producto no encontrado",
+      });
+    }
+    //Si se desea eliminar las imagenes ya guardadas del servicio cludinary y subir unas nuevas 
+    // if (existingProduct.productImage && existingProduct.productImage.length > 0) {
+    //   for (let image of existingProduct.productImage) {
+    //     await deleteImage(image.public_id);
+    //   }
+    // }
+    let uploadedImages = [];
+    if (req.files && req.files.productImage) {
+      const images = Array.isArray(req.files.productImage)
+        ? req.files.productImage
+        : [req.files.productImage];
+
+      uploadedImages = await Promise.all(
+        images.map(async (file) => {
+          const result = await uploadImages(file.tempFilePath);
+          await fs.unlink(file.tempFilePath);
+          return result;
+        })
+      );
+    }
+
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
+      productId,
+      {
+        title,
+        price,
+        description,
+        category,
+        productImage: uploadedImages.map((image) => ({
+          public_id: image.public_id,
+          secure_url: image.secure_url,
+        })),
+      },
       { new: true }
     );
 
@@ -146,13 +186,13 @@ export const updateProductById = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       status: "error",
-      message: "Le búsqueda es incorrecta",
+      message: "La búsqueda es incorrecta",
       error: error,
     });
   }
 };
 
-export const deleteProductById = async (req, res) => {
+export const deleteProductById = async (req, res, next) => {
   try {
     const { productId } = req.params;
     const deletedProduct = await ProductModel.findOneAndDelete({
@@ -164,6 +204,11 @@ export const deleteProductById = async (req, res) => {
         status: "error",
         message: "No se encontró el producto",
       });
+    }
+    if (deletedProduct.productImage && deletedProduct.productImage.length > 0) {
+      for (let image of deletedProduct.productImage) {
+        await deleteImage(image.public_id);
+      }
     }
 
     return res.status(200).json({
