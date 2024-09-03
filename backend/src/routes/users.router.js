@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getAllUsers,
   getUserById,
+  getUserByEmail,
   createUser,
   updateUser,
   deleteUser,
@@ -19,6 +20,9 @@ app.get("/", getAllUsers);
 
 // GET user by id ✅
 app.get("/:id", getUserById);
+
+// GET user by email (Para olvide contraseña) ✅
+app.post("/recover", getUserByEmail);
 
 // POST create user ✅
 app.post("/", upload.array("image"), createUser);
