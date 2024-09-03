@@ -2,8 +2,7 @@ import { UserModel } from "../models/user.model.js";
 import { processImagesToBase64 } from "../utils/imageProcessor.js";
 import nodemailer from "nodemailer";
 import { config } from "../config.js";
-
-
+import jwt from "jsonwebtoken"
 
 export const getAllUsers = async (req, res) => {
   try {
@@ -84,14 +83,21 @@ export const getUserByEmail = async (req, res) => {
 
 export const createUser = async (req, res) => {
   try {
-    const { name, lastname, email, password } = req.body;
+    const { 
+      name, 
+      lastname, 
+      email, 
+      password,
+      image = `https://ui-avatars.com/api/?background=random&name=${email}` 
+    } = req.body;
+
     const userB = await UserModel.findOne({ email });
     if (userB) {
       return res.status(400).json({
         error: "Ya existe un usuario con ese email",
       });
     }
-    const processedImages = '';
+    let processedImages = '';
     if (req.files) {
       const imageBuffers = req.files.map((image) => image.buffer);
       processedImages = await processImagesToBase64(imageBuffers);
@@ -102,7 +108,7 @@ export const createUser = async (req, res) => {
       lastname,
       email,
       password,
-      image: processedImages,
+      image,
     });
 
     // Crea un transportador de correo con las configuraciones del servicio
@@ -147,8 +153,14 @@ export const createUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
+  const { _id, email, password } = req.body;
+
+  const signJWT = (email, userId) => {
+    const token = jwt.sign({email: email, userId: userId}, process.env.JWT_SECRET)
+    return token
+  }
+
   try {
-    const { email, password } = req.body;
     const userA = {
       email,
       password,
@@ -161,7 +173,8 @@ export const loginUser = async (req, res) => {
       });
     }
     if (userA.password === userB.password) {
-      res.status(200).json({ _id: userB._id.toString() });
+      const token = signJWT(userB.email, userB._id)
+      res.status(200).json({ _id: userB._id.toString(), token: token });
     }
   } catch (e) {
     res.json({
