@@ -9,3 +9,15 @@ export const config = {
     email: process.env.EMAIL,
     email_password: process.env.MAIL_APP_PASSWORD
 };
+
+export const CLOUDINARY = {
+    CLOUD_NAME : process.env.CLOUDINARY_CLOUD_NAME,
+    API_KEY : process.env.CLOUDINARY_API_KEY,
+    API_SECRET : process.env.CLOUDINARY_API_SECRET,
+}
+
+export const PATH_TEMP_IMAGES = process.env.PATH_TEMP_IMAGES || 'temp_images';
+
+
+export const PATH_CLOUDINARY_IMAGES =
+  process.env.PATH_CLOUDINARY_PRODUCT_IMAGES || "images";
