@@ -4,7 +4,6 @@ import Cards from "../../components/cards/cards";
 import "./home.styles.css";
 
 export const Home = () => {
-  const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [orderBy, setOrderBy] = useState({ field: "title", order: "asc" });
   const [page, setPage] = useState(1);
@@ -16,8 +15,7 @@ export const Home = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
-          setProducts(data.payload);
-          setFilteredProducts(data.payload);
+          setFilteredProducts(data.payload); // Utilizar directamente el estado para productos filtrados
           setTotalPages(data.totalPages);
         } else {
           console.error("Error fetching products:", data.error);
@@ -54,10 +52,12 @@ export const Home = () => {
       <div className="home-container">
         <h1 className="home-title">Marketplace</h1>
 
+        {/* Botón para filtrar por título */}
         <button className="filter-button" onClick={toggleOrder}>
           Sort By Title {orderBy.order === "asc" ? "↓" : "↑"}
         </button>
 
+        {/* Lista de productos utilizando el componente Cards */}
         <Cards allProducts={filteredProducts} />
 
         <div className="pagination">
