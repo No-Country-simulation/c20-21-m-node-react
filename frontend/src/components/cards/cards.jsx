@@ -1,20 +1,15 @@
-// import React from 'react';
-// import "./cards.styles.css";
+import React from "react";
+import Card from "../card/Card";
+import "./cards.styles.css";
 
-// const Cards = ({ product }) => {
-//   return (
-//     <div className="cards">
-//       <img 
-//         src={product.productImage ? product.productImage[0] : "https://via.placeholder.com/150"}
-//         alt={product.title}
-         
-//       />
-//       <h2>{product.title}</h2> 
-//       <p>Price: ${product.price}</p>
-//     </div>
-//   );
-// };
+function Cards({ allProducts }) {
+  return (
+    <div className="cards-list">
+      {allProducts.map((product) => (
+        <Card key={product._id} product={product} />
+      ))}
+    </div>
+  );
+}
 
-// export default Cards;
-
-
+export default Cards;
