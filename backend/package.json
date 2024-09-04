@@ -8,9 +8,12 @@
     "dev": "nodemon ./src/app.js"
   },
   "dependencies": {
+    "cloudinary": "^2.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-fileupload": "^1.5.1",
+    "fs-extra": "^11.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.4",
     "mongoose-paginate-v2": "^1.8.3",
