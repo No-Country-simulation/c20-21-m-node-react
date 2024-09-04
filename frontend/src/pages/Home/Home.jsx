@@ -15,7 +15,7 @@ export const Home = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
-          setFilteredProducts(data.payload); // Utilizar directamente el estado para productos filtrados
+          setFilteredProducts(data.payload);
           setTotalPages(data.totalPages);
         } else {
           console.error("Error fetching products:", data.error);
@@ -52,12 +52,10 @@ export const Home = () => {
       <div className="home-container">
         <h1 className="home-title">Marketplace</h1>
 
-        {/* Botón para filtrar por título */}
         <button className="filter-button" onClick={toggleOrder}>
           Sort By Title {orderBy.order === "asc" ? "↓" : "↑"}
         </button>
 
-        {/* Lista de productos utilizando el componente Cards */}
         <Cards allProducts={filteredProducts} />
 
         <div className="pagination">
