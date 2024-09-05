@@ -26,8 +26,8 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     ownerId: {
-      type: String,
-      required: false, //Esto hay que agregarlo como obligatorio >> true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", 
     },
   },
   { timestamps: true }

@@ -1,10 +1,9 @@
 import { UserModel } from "../models/user.model.js";
-import { processImagesToBase64 } from "../utils/imageProcessor.js";
 import nodemailer from "nodemailer";
 import { config } from "../config.js";
 import jwt from "jsonwebtoken"
 
-export const getAllUsers = async (req, res) => {
+export const getAllUsers = async (_, res) => {
   try {
     const users = await UserModel.find({});
 
@@ -97,11 +96,6 @@ export const createUser = async (req, res) => {
         error: "Ya existe un usuario con ese email",
       });
     }
-    let processedImages = '';
-    if (req.files) {
-      const imageBuffers = req.files.map((image) => image.buffer);
-      processedImages = await processImagesToBase64(imageBuffers);
-    }
 
     let newUser = await UserModel.create({
       name,
@@ -153,7 +147,7 @@ export const createUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-  const { _id, email, password } = req.body;
+  const { email, password } = req.body;
 
   const signJWT = (email, userId) => {
     const token = jwt.sign({email: email, userId: userId}, process.env.JWT_SECRET)

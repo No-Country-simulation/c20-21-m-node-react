@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
     getChatById,
-    createChat
+    createNewChat
 } from "../controllers/chat.controllers.js"
 
 const app = Router();
@@ -10,7 +10,7 @@ const app = Router();
 app.get("/:id", getChatById);
 
 // POST create chat 🚧
-app.post("/", createChat);
+app.post("/", createNewChat);
 
 // No necesitamos eliminar ni editar mensajes para que sea mas sencillo.
 
