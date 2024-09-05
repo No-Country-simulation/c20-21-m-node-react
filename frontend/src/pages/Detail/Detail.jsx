@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import "./Detail.styles.css";
 
 export const Detail = () => {
     const { id } = useParams();
-    const [product, setProduct] = useState({});
+    const [product, setProduct] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -28,17 +28,24 @@ export const Detail = () => {
         fetchProduct();
     }, [id]);
     
-
     if (error) {
         return <div>Error loading product: {error}</div>;
     }
 
+    if (!product) {
+        return <div>Loading...</div>;
+    }
+
     return (
-        <div>
-            <h1>{product.title}</h1>
-            <p>Price: ${product.price}</p>
-            <p>Description: {product.description}</p>
-            <img src={product.productImage} alt={product.title} />
+        <div className="detail-container">
+            <h1 className="detail-title">{product.title}</h1>
+            <p className="detail-price">Price: ${product.price}</p>
+            <p className="detail-description">Description: {product.description}</p>
+            <img 
+                className="detail-image"
+                src={product.productImage && product.productImage[0] ? product.productImage[0].secure_url : "https://via.placeholder.com/150"} 
+                alt={product.title} 
+            />
             <p>Category: {product.category}</p>
             <Link to="/home/">
                 <button className="return-button">Return</button>
@@ -46,5 +53,3 @@ export const Detail = () => {
         </div>
     );
 };
-
-
