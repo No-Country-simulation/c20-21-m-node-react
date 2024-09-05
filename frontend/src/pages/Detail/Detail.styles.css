@@ -1,0 +1,42 @@
+.detail-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.detail-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.detail-price {
+    color: #ff5722;
+    font-weight: bold;
+}
+
+.detail-description {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.detail-image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.return-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+.return-button:hover {
+    background-color: #0056b3;
+}

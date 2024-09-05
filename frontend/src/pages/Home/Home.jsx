@@ -4,7 +4,8 @@ import Cards from "../../components/cards/cards";
 import "./home.styles.css";
 
 export const Home = () => {
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]);  
+  const [filteredProducts, setFilteredProducts] = useState([]);  
   const [orderBy, setOrderBy] = useState({ field: "title", order: "asc" });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -15,7 +16,8 @@ export const Home = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
-          setFilteredProducts(data.payload);
+          setProducts(data.payload);
+          setFilteredProducts(data.payload); 
           setTotalPages(data.totalPages);
         } else {
           console.error("Error fetching products:", data.error);
@@ -46,9 +48,16 @@ export const Home = () => {
     if (page > 1) setPage(page - 1);
   };
 
+  const handleSearch = (searchValue) => {
+    const filtered = products.filter((product) =>
+      product.title.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  };
+
   return (
     <>
-      <NavBar />
+      <NavBar onSearch={handleSearch} /> 
       <div className="home-container">
         <h1 className="home-title">Marketplace</h1>
 
