@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import "./Detail.styles.css";
 
 export const Detail = () => {
     const { id } = useParams();
-    const [product, setProduct] = useState(null); // Cambiado a null
+    const [product, setProduct] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -17,7 +18,7 @@ export const Detail = () => {
                 }
     
                 const data = await response.json();
-                setProduct(data); // Aquí guardamos el producto obtenido
+                setProduct(data);
             } catch (error) {
                 console.error("Error fetching product:", error);
                 setError(error.message);
@@ -36,12 +37,13 @@ export const Detail = () => {
     }
 
     return (
-        <div>
-            <h1>{product.title}</h1>
-            <p>Price: ${product.price}</p>
-            <p>Description: {product.description}</p>
+        <div className="detail-container">
+            <h1 className="detail-title">{product.title}</h1>
+            <p className="detail-price">Price: ${product.price}</p>
+            <p className="detail-description">Description: {product.description}</p>
             <img 
-                src={product.productImage && product.productImage[0] ? `data:image/webp;base64,${product.productImage[0]}` : "https://via.placeholder.com/150"} 
+                className="detail-image"
+                src={product.productImage && product.productImage[0] ? product.productImage[0].secure_url : "https://via.placeholder.com/150"} 
                 alt={product.title} 
             />
             <p>Category: {product.category}</p>
