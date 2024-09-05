@@ -20,10 +20,10 @@ export const getAllProducts = async (req, res) => {
     const options = {
       limit: Number(limit),
       page: Number(page),
-      populate: {
-        path: "users",
-        select: "name",
-      },
+      // populate: {
+      //   path: "users",
+      //   select: "name",
+      // },
     };
 
     const result = await ProductModel.paginate(filter, options);
