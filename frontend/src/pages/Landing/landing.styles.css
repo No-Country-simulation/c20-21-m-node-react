@@ -1,0 +1,36 @@
+.landing-page {
+    width: 100vw;
+    height: 100vh;
+    overflow:hidden
+  }
+  
+  .titulo-landing{
+    position: absolute;
+    margin-top: 0px;
+    font-size: 70px;
+    color: rgba(141, 151, 242, 0.9);
+    text-shadow: 5px 1px 10px rgba(138, 44, 211, 0.6);
+    font-family: fantasy;
+    position: relative;
+  }
+  
+  .landing-button{
+    border-radius: 5px;
+    font-size: 20px;
+    font-style: oblique;
+    font-weight: bold;
+    border-color: rgb(1, 19, 19);
+    box-shadow: 0 5px rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+  }
+  
+  .landing-button:hover {
+    color: rgba(142, 72, 5, 0.8);
+    background-color: rgba(191, 213, 248, 0.8); 
+  }
+  
+  .landing-button:active{
+    transform: translateY(4px);
+  }
+    
+  
