@@ -1,4 +1,5 @@
 import { ProductModel } from "../models/product.model.js";
+import { UserModel } from "../models/user.model.js";
 import { uploadImages, deleteImage } from "../utils/cloudinary.util.js";
 import fs from "fs-extra";
 
@@ -19,6 +20,10 @@ export const getAllProducts = async (req, res) => {
     const options = {
       limit: Number(limit),
       page: Number(page),
+      populate: {
+        path: "users",
+        select: "name",
+      },
     };
 
     const result = await ProductModel.paginate(filter, options);
@@ -73,7 +78,10 @@ export const getProductById = async (req, res) => {
 
 export const createProduct = async (req, res, next) => {
   try {
-    const { title, price, description, category } = req.body;
+    const { title, price, description, category, ownerId } = req.body;
+    const user = await UserModel.findById(ownerId);
+    console.log(user);
+    
     if (!req.files || !req.files.productImage) {
       return res.status(400).json({
         status: "error",
@@ -94,7 +102,7 @@ export const createProduct = async (req, res, next) => {
         return result;
       })
     );
-    //Devuelve en req.body.productId un array de objetos con las propiedades public_id y secure_url 
+    //Devuelve en req.body.productId un array de objetos con las propiedades public_id y secure_url
     req.body.productImage = uploadedImages.map((image) => ({
       public_id: image.public_id,
       secure_url: image.secure_url,
@@ -106,13 +114,19 @@ export const createProduct = async (req, res, next) => {
         message: "Debe ingresar todos los campos.",
       });
     }
-    const product = await ProductModel.create({
+    const product = await new ProductModel({
       title,
       price,
       description,
-      productImage: req.body.productImage, //Guarda las imagenes con sus respectivas propiedades public_id y secure_url 
+      productImage: req.body.productImage, //Guarda las imagenes con sus respectivas propiedades public_id y secure_url
       category,
+      ownerId: user._id,
     });
+
+    const savedProduct = await product.save();
+    user.productsId = [...user.productsId, savedProduct._id];
+    await user.save();
+
     res.status(201).json({
       status: "success",
       message: "El producto ha sido creado",
@@ -135,7 +149,7 @@ export const updateProductById = async (req, res) => {
         message: "Producto no encontrado",
       });
     }
-    //Si se desea eliminar las imagenes ya guardadas del servicio cludinary y subir unas nuevas 
+    //Si se desea eliminar las imagenes ya guardadas del servicio cludinary y subir unas nuevas
     // if (existingProduct.productImage && existingProduct.productImage.length > 0) {
     //   for (let image of existingProduct.productImage) {
     //     await deleteImage(image.public_id);
