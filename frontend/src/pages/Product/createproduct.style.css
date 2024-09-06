@@ -1,0 +1,30 @@
+.create-product {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.create-product form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 10%;
+  background-color: gray;
+  width: 300px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field p {
+  margin: 5px;
+}
+
+.submit-button {
+  margin: 20px;
+}
