@@ -1,11 +1,6 @@
 .cards-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   gap: 20px;
-}
-
-.ordenar-nombre {
-  margin-bottom: 20px;
-  padding: 10px;
-  cursor: pointer;
+  justify-content: center;
 }

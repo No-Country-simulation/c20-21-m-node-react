@@ -4,6 +4,7 @@ import { Home } from "../pages/Home/Home";
 import { Detail } from "../pages/Detail/Detail";
 import HomeLayout from '../layouts/HomeLayout';
 import Error404 from '../pages/Error/Error404';
+import { LandingPage } from '../pages/Landing/Landing';
 
 const MyRoutes = () => {
     return (
@@ -14,6 +15,7 @@ const MyRoutes = () => {
                     <Route path=":id" element={<Detail />} />
                 </Route>
                 <Route path="*" element={<Error404 />} />
+                <Route path='' element={<LandingPage/>}/>
             </Routes>
         </>
     );
