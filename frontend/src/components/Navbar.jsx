@@ -183,9 +183,9 @@ const NavBar = ({ onSearch }) => {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            Marketplace
+            PopMart
           </Typography>
-
+          
           <Search>
             <SearchIconWrapper>
               <SearchIcon />

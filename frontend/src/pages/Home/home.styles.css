@@ -23,6 +23,12 @@
     justify-content: center;
   }
   
+  .filter-button{
+    background-color: #333;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
   .pagination {
     display: flex;
     justify-content: center;

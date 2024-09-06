@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import Cards from "../../components/cards/cards";
+import logoImage from '../../assets/logoImage.svg';
 import "./home.styles.css";
 
 export const Home = () => {
@@ -9,7 +10,7 @@ export const Home = () => {
   const [orderBy, setOrderBy] = useState({ field: "title", order: "asc" });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const productsPerPage = 10;
+  const productsPerPage = 3;
 
   useEffect(() => {
     fetch(`/api/products?limit=${productsPerPage}&page=${page}`)
@@ -59,7 +60,9 @@ export const Home = () => {
     <>
       <NavBar onSearch={handleSearch} /> 
       <div className="home-container">
-        <h1 className="home-title">Marketplace</h1>
+        
+        <img src={logoImage} alt="PopMart logo" style={{ width: 300, height: 300, marginRight: 5}} />
+        <br />
 
         <button className="filter-button" onClick={toggleOrder}>
           Sort By Title {orderBy.order === "asc" ? "↓" : "↑"}
