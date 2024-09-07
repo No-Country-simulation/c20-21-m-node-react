@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./createproduct.style.css"
 import toast from "react-hot-toast";
 import Card from "../../components/card/card";
+import logoImage from "../../assets/logoImage.svg"
+import { Link } from "react-router-dom";
 
 function CreateProduct() {
   const [title, setTitle] = useState("")
@@ -84,6 +86,7 @@ function CreateProduct() {
 
   return (
     <div className="create-product">
+      <img src={logoImage} alt="PopMart logo" style={{ width: 300, height: 300, marginRight: 5, position:"absolute", top:30}} />
       <form action="" id="myForm" onSubmit={(e) => handleSubmit(e)}>
         <h2>Create a Product</h2>
         <label htmlFor="" className="form-field" >
@@ -107,10 +110,14 @@ function CreateProduct() {
           <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
         </label>
         <button type="submit" className="submit-button">Submit</button>
+        <Link to="/home/">
+                <button className="return-button" style={{margin:5}}>Return</button>
+        </Link>
       </form>
       <div className="card-preview-container">
         <h3 className="card-preview-title">Card preview</h3>
         <Card product={productData} />
+        
       </div>
 
     </div>
