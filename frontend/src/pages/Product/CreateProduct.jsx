@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import Card from "../../components/card/card";
 import logoImage from "../../assets/logoImage.svg"
 import { Link } from "react-router-dom";
+import NavBar from "../../components/Navbar";
 
 function CreateProduct() {
   const [title, setTitle] = useState("")
@@ -85,6 +86,8 @@ function CreateProduct() {
   }
 
   return (
+  <>
+    <NavBar/>
     <div className="create-product">
       <img src={logoImage} alt="PopMart logo" style={{ width: 300, height: 300, marginRight: 5, position:"absolute", top:30}} />
       <form action="" id="myForm" onSubmit={(e) => handleSubmit(e)}>
@@ -121,6 +124,7 @@ function CreateProduct() {
       </div>
 
     </div>
+  </>
   )
 }
 

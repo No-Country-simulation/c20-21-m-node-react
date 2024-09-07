@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./Detail.styles.css";
+import NavBar from "../../components/Navbar";
 
 export const Detail = () => {
     const { id } = useParams();
@@ -37,6 +38,8 @@ export const Detail = () => {
     }
 
     return (
+    <>
+        <NavBar/>
         <div className="detail-container">
             <h1 className="detail-title">{product.title}</h1>
             <p className="detail-price">Price: ${product.price}</p>
@@ -51,5 +54,6 @@ export const Detail = () => {
                 <button className="return-button">Return</button>
             </Link>
         </div>
+    </>
     );
 };
