@@ -1,0 +1,43 @@
+.create-product {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.create-product form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 20px;
+  background-color: rgb(171, 127, 96);
+  width: 300px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field p {
+  margin: 5px;
+}
+
+.submit-button {
+  margin: 20px;
+}
+
+.card-preview-container{
+  margin: 20px;
+}
+
+.card-preview-title{
+  text-align: center;
+}
+
+label {
+  margin: 2px;
+  padding: 3px;
+}
