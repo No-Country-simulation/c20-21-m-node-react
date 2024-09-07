@@ -16,8 +16,11 @@ const MyRoutes = () => {
                     <Route path=":id" element={<Detail />} />
                 </Route>
                 <Route path="*" element={<Error404 />} />
-                <Route path='' element={<LandingPage/>}/>
-                <Route path='/product' element={<CreateProduct/>}/>
+                <Route path='' element={<LandingPage />} />
+                <Route path="/product">
+                    <Route path='create' element={<CreateProduct />} />
+                </Route>
+
             </Routes>
         </>
     );

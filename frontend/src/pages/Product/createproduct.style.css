@@ -11,8 +11,8 @@
   justify-content: center;
   align-items: center;
   border: 1px solid black;
-  border-radius: 10%;
-  background-color: gray;
+  border-radius: 20px;
+  background-color: rgb(171, 127, 96);
   width: 300px;
 }
 
@@ -27,4 +27,17 @@
 
 .submit-button {
   margin: 20px;
+}
+
+.card-preview-container{
+  margin: 20px;
+}
+
+.card-preview-title{
+  text-align: center;
+}
+
+label {
+  margin: 2px;
+  padding: 3px;
 }

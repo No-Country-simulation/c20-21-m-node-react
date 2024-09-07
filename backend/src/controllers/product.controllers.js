@@ -80,7 +80,7 @@ export const createProduct = async (req, res, next) => {
   try {
     const { title, price, description, category, ownerId } = req.body;
     const user = await UserModel.findById(ownerId);
-    console.log(user);
+    console.log(req.body);
     
     if (!req.files || !req.files.productImage) {
       return res.status(400).json({
@@ -120,12 +120,12 @@ export const createProduct = async (req, res, next) => {
       description,
       productImage: req.body.productImage, //Guarda las imagenes con sus respectivas propiedades public_id y secure_url
       category,
-      ownerId: user._id,
+      // ownerId: user._id,
     });
 
     const savedProduct = await product.save();
-    user.productsId = [...user.productsId, savedProduct._id];
-    await user.save();
+    // user.productsId = [...user.productsId, savedProduct._id];
+    // await user.save();
 
     res.status(201).json({
       status: "success",
