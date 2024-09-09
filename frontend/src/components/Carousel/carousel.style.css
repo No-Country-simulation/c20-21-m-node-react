@@ -1,0 +1,29 @@
+.carousel-container {
+  position: relative;
+}
+
+.carousel-number {
+  position:absolute;
+  left: 50%;
+  translate: -50% 0;
+  top: 90%;
+  color: rgb(86, 85, 85);
+  font-size: small;
+}
+
+.carousel-buttons {
+  display: flex;
+  gap: 180px;
+  position:absolute;
+  left: 50%;
+  translate: -50% 0;
+  top: 50%;
+}
+
+.carousel-button {
+  border-radius: 50%;
+  background: rgb(190, 190, 190);
+  opacity: 50%;
+  color: black;
+  padding: 8px;
+}
