@@ -13,7 +13,6 @@ dist
 dist-ssr
 *.local
 .env
-.vercel
 
 # Editor directories and files
 tmp/
@@ -28,4 +27,3 @@ tmp/
 *.sw?
 *.credentials.js
 
-.vercel
