@@ -1,4 +1,4 @@
-//import './App.css'
+import './App.css'
 import MyRoutes from './routes/routes'
 import { Toaster } from 'react-hot-toast';
 
