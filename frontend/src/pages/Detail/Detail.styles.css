@@ -33,7 +33,7 @@
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    margin: 20px 0px;
+    text-transform: uppercase;
     transition: background-color 0.3s ease;
 }
 
