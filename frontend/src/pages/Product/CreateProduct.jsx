@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./createproduct.style.css";
 import toast from "react-hot-toast";
 import Card from "../../components/card/card";
-// import logoImage from "../../assets/logoImage.svg";
+import logoImage from "../../assets/logoImage.svg";
 import { Link } from "react-router-dom";
 import NavBar from "../../components/Navbar";
 
@@ -18,15 +18,15 @@ function CreateProduct() {
 
 
   const handleImage = (e) => {
-    setImage(e.target.files[0]);
-    console.log(e.target.files[0]);
+    const files = e.target.files;
+    setImage(files); 
 
-    if (e.target.files[0]) {
-      const urlBlob = URL.createObjectURL(e.target.files[0]);
-      setImageBlob(urlBlob);
-      console.log(urlBlob);
+    if (files) {
+      const urlBlobArray = Array.from(files).map(file => URL.createObjectURL(file));
+      setImageBlob(urlBlobArray); // Guardar múltiples blobs en un array
+      console.log(urlBlobArray);
     }
-  };
+};
 
   const resetAllFields = () => {
     setTitle("");
@@ -41,34 +41,35 @@ function CreateProduct() {
   const handleResponseOk = (data) => {
     setResponse(data);
     console.log(data);
-    toast.success(data.message);
+    toast.success(data.message || 'Product created successfully');
     resetAllFields();
-  };
+};
 
-  const handleResponseError = (data) => {
-    setResponse(data);
-    console.error(data);
-    toast.error(data.message);
-  };
+const handleResponseError = (error) => {
+    console.error('Error:', error);
+    toast.error(error.message || 'An error occurred');
+};
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("price", price);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("productImage", image);
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("price", price);
+  formData.append("description", description);
+  formData.append("category", category);
+  formData.append("productImage", image);
 
-    fetch("https://popmart-backend.vercel.app/api/products", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => handleResponseOk(data))
-      .catch((error) => handleResponseError(error));
-  };
+  fetch("https://popmart-backend.vercel.app/api/products", {
+    method: "POST",
+    body: formData,
+    mode: "cors",
+  })
+
+.then((response) => response.json())
+.then((data) => handleResponseOk(data))
+.catch((error) => handleResponseError(error));
+}
 
   const productImageData = () => {
     if (imageBlob) {
@@ -99,6 +100,7 @@ function CreateProduct() {
           <div className="title-container">
             <h2 className="form-title">Create a Product</h2>
           </div>
+          <img src={logoImage} alt="PopMart logo" style={{ width: 150, height: 150, marginRight: 3}} />
           <div className="inputs-container">
             <label htmlFor="title" className="form-field">
               <p>Title</p>

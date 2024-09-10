@@ -23,7 +23,7 @@
 .title-container {
   width: 100%;
   display: flex;
-  justify-content: left;
+  justify-content: center;
 }
 
 .title-container > h2,

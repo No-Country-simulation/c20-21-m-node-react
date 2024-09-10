@@ -5,6 +5,7 @@ import productsRoute from "./routes/products.router.js";
 import usersRoute from "./routes/users.router.js";
 import chatRoute from "./routes/chats.router.js";
 import { config } from "./config.js";
+import { uploadImages } from "./middlewares/cloudinary.middleware.js";
 
 const PORT = config.port;
 const API_USER = config.api_user;
@@ -14,12 +15,19 @@ const app = express();
 //  Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+const corsOptions = {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200,
+};
 
+app.use(cors(corsOptions));
 //  Routes
-app.use("/api/products", productsRoute);
+app.use("/api/products", productsRoute, uploadImages);
 app.use("/api/users", usersRoute);
 app.use("/api/chats", chatRoute);
+app.options('*', cors(corsOptions)); 
 
 //Conectar con MongoDB ATLAS a la Base de Datos.
 const enviroment = async () => {
