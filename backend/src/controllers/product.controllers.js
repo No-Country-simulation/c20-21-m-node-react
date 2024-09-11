@@ -1,6 +1,6 @@
 import { ProductModel } from "../models/product.model.js";
 import { UserModel } from "../models/user.model.js";
-import { uploadImages, deleteImage } from "../utils/cloudinary.util.js";
+import { uploadImages} from "../utils/cloudinary.util.js";
 import fs from "fs-extra";
 
 export const getAllProducts = async (req, res) => {

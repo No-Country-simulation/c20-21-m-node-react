@@ -1,61 +1,85 @@
-.landing-page {
-    background-image: url('../../assets/logoImage.svg');
-    background-size: 50%; 
-    background-position: center center;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; 
-    align-items: center;
-    padding-top: 50px; 
-    overflow: hidden;
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
 }
 
-.titulo-landing {
-    font-size: 60px; 
-    color: rgba(255, 255, 255, 0.9); 
-    text-shadow: 5px 5px 15px rgba(4, 99, 37, 0.6);
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
+.login-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  width: 400px;
 }
 
-.landing-button {
-    margin-top: 30px; 
-    padding: 15px 30px;
-    font-size: 18px;
-    font-weight: bold;
-    background-color: rgba(255, 255, 255, 0.9); 
-    border: 2px solid rgba(0, 0, 0, 0.8);
-    color: rgba(0, 0, 0, 0.8);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+.login-logo {
+  width: 200px;
+  margin-bottom: 20px;
 }
 
-.landing-button:hover {
-    color: white;
-    background-color: rgba(5, 44, 142, 0.8);
-    transform: scale(1.05);
+.login-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
 }
 
-.landing-button:active {
-    transform: translateY(4px);
-    box-shadow: none;
+.login-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
 }
 
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
 
-@media (max-width: 768px) {
-    .titulo-landing {
-        font-size: 40px; 
-    }
+.login-input {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  color: #333;
+}
 
-    .landing-button {
-        font-size: 16px;
-        padding: 12px 24px; 
-    }
+.login-button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-footer {
+  margin-top: 20px;
+}
+
+.forgot-password,
+.create-account {
+  color: #007bff;
+  text-decoration: none;
+  margin: 10px 0;
+  display: block;
+}
+
+.guest-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #555;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.guest-button:hover {
+  background-color: #333;
 }
