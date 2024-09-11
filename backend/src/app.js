@@ -19,6 +19,7 @@ const allowedOrigins = [
 //  Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+//Permisos para que permita conexiones de allowedOrigins
 app.use(cors({
     origin: function(origin, callback) {
       // Permite solicitudes sin origen (como cURL, Postman, etc.)
