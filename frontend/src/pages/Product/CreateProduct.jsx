@@ -39,34 +39,35 @@ function CreateProduct() {
   const handleResponseOk = (data) => {
     setResponse(data);
     console.log(data);
-    toast.success(data.message);
+    toast.success(data.message || 'Product created successfully');
     resetAllFields();
-  };
+};
 
-  const handleResponseError = (data) => {
-    setResponse(data);
-    console.error(data);
-    toast.error(data.message);
-  };
+const handleResponseError = (error) => {
+    console.error('Error:', error);
+    toast.error(error.message || 'An error occurred');
+};
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("price", price);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("productImage", image);
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("price", price);
+  formData.append("description", description);
+  formData.append("category", category);
+  formData.append("productImage", image);
 
-    fetch("https://popmart-backend.vercel.app/api/products", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => handleResponseOk(data))
-      .catch((error) => handleResponseError(error));
-  };
+  fetch("https://popmart-backend.vercel.app/api/products", {
+    method: "POST",
+    body: formData,
+    mode: "cors",
+  })
+
+.then((response) => response.json())
+.then((data) => handleResponseOk(data))
+.catch((error) => handleResponseError(error));
+}
 
   const productImageData = () => {
     if (imageBlob) {

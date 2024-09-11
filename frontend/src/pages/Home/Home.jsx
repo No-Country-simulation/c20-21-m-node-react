@@ -10,7 +10,7 @@ export const Home = () => {
   const [orderBy, setOrderBy] = useState({ field: "title", order: "asc" });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const productsPerPage = 3;
+  const productsPerPage = 12;
 
   useEffect(() => {
     fetch(`https://popmart-backend-beta.vercel.app/api/products?limit=${productsPerPage}&page=${page}`)
