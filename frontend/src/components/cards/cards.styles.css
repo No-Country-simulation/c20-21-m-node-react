@@ -1,7 +1,23 @@
 .cards-list {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 5px;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+@media (min-width: 480px){
+  .cards-list {
+    gap: 20px;
+  }
+}
+@media (min-width: 800px){
+  .cards-list {
+    gap: 30px;
+  }
+}
+@media (min-width: 1024px){
+  .cards-list {
+    gap: 30px;
+  }
 }

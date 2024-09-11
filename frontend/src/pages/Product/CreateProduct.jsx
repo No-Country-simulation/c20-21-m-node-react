@@ -8,7 +8,7 @@ import NavBar from "../../components/Navbar";
 
 function CreateProduct() {
   const [title, setTitle] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState("0.00");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
@@ -91,83 +91,89 @@ const handleSubmit = (e) => {
     <>
       <NavBar />
       <div className="create-product">
-        <img
-          src={logoImage}
-          alt="PopMart logo"
-          style={{
-            width: 300,
-            height: 300,
-            marginRight: 5,
-            position: "absolute",
-            top: 30,
-          }}
-        />
-        <form action="" id="myForm" onSubmit={(e) => handleSubmit(e)}>
-          <div className="title-container">
-            <h2 className="form-title">Create a Product</h2>
-          </div>
-          <div className="inputs-container">
-            <label htmlFor="title" className="form-field">
-              <p>Title</p>
-              <input
-                className="input-text"
-                id="title"
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </label>
-            <label htmlFor="" className="form-field">
-              <p>Price</p>
-              <input
-                className="input-number"
-                type="number"
-                step="0.01"
-                placeholder={price}
-                onChange={(e) => setPrice(e.target.value === '' ? '0.00' : parseFloat(e.target.value))}
-                required
-              />
-            </label>
-            <label htmlFor="" className="form-field">
-              <p>Description</p>
-              <textarea
-                className="input-textarea"
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-            </label>
-            <label htmlFor="" className="form-field">
-              <p>Images</p>
-              <input type="file" onChange={(e) => handleImage(e)} required multiple/>
-            </label>
-            <label htmlFor="" className="form-field">
-              <p>Category</p>
-              <input
-                type="text"
-                className="input-text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                required
-              />
-            </label>
-          </div>
-          <div className="buttons-container">
-            <Link to="/home/">
-              <button className="return-button" style={{ margin: 5 }}>
-                Return
+        {/* <div className="popmart-logo-container">
+          <img src={logoImage} alt="PopMart logo" className="popmart-logo" />
+        </div> */}
+        <div className="form-container">
+          <form action="" id="myForm" onSubmit={(e) => handleSubmit(e)}>
+            <div className="title-container">
+              <h2 className="form-title">Create a Product</h2>
+            </div>
+            <div className="inputs-container">
+              <label htmlFor="title" className="form-field">
+                <p>Title</p>
+                <input
+                  className="input-text"
+                  id="title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </label>
+              <label htmlFor="" className="form-field">
+                <p>Price</p>
+                <input
+                  className="input-number"
+                  type="number"
+                  step="0.01"
+                  placeholder={price}
+                  onChange={(e) =>
+                    setPrice(
+                      e.target.value === ""
+                        ? "0.00"
+                        : parseFloat(e.target.value)
+                    )
+                  }
+                  required
+                />
+              </label>
+              <label htmlFor="" className="form-field">
+                <p>Description</p>
+                <textarea
+                  className="input-textarea"
+                  type="text"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
+              </label>
+              <label htmlFor="" className="form-field">
+                <p>Images</p>
+                <input
+                  className="input-file"
+                  type="file"
+                  onChange={(e) => handleImage(e)}
+                  required
+                  multiple
+                />
+              </label>
+              <label htmlFor="" className="form-field">
+                <p>Category</p>
+                <input
+                  type="text"
+                  className="input-text"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+            <div className="buttons-container">
+              <Link to="/home/">
+                <button className="return-button" style={{ margin: 5 }}>
+                  Return
+                </button>
+              </Link>
+              <button type="submit" className="submit-button">
+                Submit
               </button>
-            </Link>
-            <button type="submit" className="submit-button">
-              Submit
-            </button>
+            </div>
+          </form>
+          <div className="card-preview-container">
+            <h3 className="card-preview-title">Card preview</h3>
+            <Card product={productData} />
           </div>
-        </form>
-        <div className="card-preview-container">
-          <h3 className="card-preview-title">Card preview</h3>
-          <Card product={productData} />
         </div>
       </div>
     </>

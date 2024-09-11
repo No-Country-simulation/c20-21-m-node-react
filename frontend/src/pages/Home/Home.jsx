@@ -13,7 +13,7 @@ export const Home = () => {
   const productsPerPage = 12;
 
   useEffect(() => {
-    fetch('http://localhost:5173/api/products')
+    fetch(`https://popmart-backend-beta.vercel.app/api/products?limit=${productsPerPage}&page=${page}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
