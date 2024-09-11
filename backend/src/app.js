@@ -11,28 +11,34 @@ const API_USER = config.api_user;
 const API_PASSWORD = config.api_password;
 const app = express();
 
-const allowedOrigins = [
-    'http://localhost:5173',     // Tu entorno de desarrollo local
-    'https://popmart-frontend-psi.vercel.app'  // URL de tu frontend desplegado
-  ];
+// const allowedOrigins = [
+//     'http://localhost:5173',     // Tu entorno de desarrollo local
+//     'https://popmart-frontend-psi.vercel.app'  // URL de tu frontend desplegado
+//   ];
 
 //  Middlewares
+app.use(cors({
+  origin: '*', // Permitir todos los orígenes
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
+}));
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Permisos para que permita conexiones de allowedOrigins
-app.use(cors({
-    origin: function(origin, callback) {
-      // Permite solicitudes sin origen (como cURL, Postman, etc.)
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Asegúrate de permitir los métodos que estás utilizando
-    allowedHeaders: ['Content-Type', 'Authorization'], // Asegúrate de permitir los encabezados que estás utilizando
-  }));
+// app.use(cors({
+//     origin: function(origin, callback) {
+//       // Permite solicitudes sin origen (como cURL, Postman, etc.)
+//       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error('Not allowed by CORS'));
+//       }
+//     },
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Asegúrate de permitir los métodos que estás utilizando
+//     allowedHeaders: ['Content-Type', 'Authorization'], // Asegúrate de permitir los encabezados que estás utilizando
+//   }));
 
 //  Routes
 app.use("/api/products", productsRoute);

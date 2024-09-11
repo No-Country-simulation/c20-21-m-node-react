@@ -19,5 +19,5 @@ export const uploadImages = async (imagePath) => {
 };
 
 export const deleteImage = async (publicId) => {
-    return await cloudinary.uploader.destroy(publicId);
-  };
+  return await cloudinary.uploader.destroy(publicId);
+};
