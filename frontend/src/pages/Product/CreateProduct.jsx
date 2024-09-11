@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./createproduct.style.css";
 import toast from "react-hot-toast";
 import Card from "../../components/card/card";
-// import logoImage from "../../assets/logoImage.svg";
+import logoImage from "../../assets/logoImage.svg";
 import { Link } from "react-router-dom";
 import NavBar from "../../components/Navbar";
 

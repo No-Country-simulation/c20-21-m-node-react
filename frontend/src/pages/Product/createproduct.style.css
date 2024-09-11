@@ -51,7 +51,6 @@
 .form-field {
   display: flex;
   flex-direction: column;
-  align-items: start;
 }
 
 .form-field p {
@@ -97,7 +96,7 @@
 }
 
 .submit-button {
-  margin: 20px 0px;
+  margin: 20px;
 }
 
 .card-preview-container {
@@ -109,7 +108,7 @@
   align-items: center;
 }
 
-.card-preview-title {
+.card-preview-title{
   text-align: center;
   margin: 0 0 10px 0;
 }

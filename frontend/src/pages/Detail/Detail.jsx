@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./Detail.styles.css";
 import NavBar from "../../components/Navbar";
-import { useEffect, useState } from "react";
 
 export const Detail = () => {
     const { id } = useParams();
@@ -11,7 +11,7 @@ export const Detail = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await fetch(`https://popmart-backend.vercel.app/api/products/${id}`); 
+                const response = await fetch(`http://localhost:5000/api/products/${id}`); 
     
                 if (!response.ok) {
                     const errorData = await response.json();
