@@ -3,7 +3,7 @@
 }
 
 .carousel-number {
-  position:absolute;
+  position: absolute;
   left: 50%;
   translate: -50% 0;
   top: 90%;
@@ -13,8 +13,8 @@
 
 .carousel-buttons {
   display: flex;
-  gap: 180px;
-  position:absolute;
+  gap: 8em;
+  position: absolute;
   left: 50%;
   translate: -50% 0;
   top: 50%;
@@ -25,5 +25,33 @@
   background: rgb(190, 190, 190);
   opacity: 50%;
   color: black;
-  padding: 8px;
+  padding: 5px;
+}
+
+@media (min-width: 480px) {
+  .carousel-buttons {
+    gap: 9em;
+  }
+  .carousel-button {
+    padding: 8px;
+  }
+}
+@media (min-width: 800px) {
+  .carousel-buttons {
+    gap: 15vw;
+  }
+  .carousel-button {
+    padding: 10px;
+  }
+}
+@media (min-width: 1024px) {
+  .carousel-buttons {
+    gap: 15vw;
+  }
+}
+
+@media (min-width: 1154px) {
+  .carousel-buttons {
+    gap: 13vw;
+  }
 }
