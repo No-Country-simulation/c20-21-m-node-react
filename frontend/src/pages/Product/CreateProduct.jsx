@@ -58,16 +58,14 @@ const handleSubmit = (e) => {
   formData.append("category", category);
   formData.append("productImage", image);
 
-  fetch("https://popmart-backend.vercel.app/api/products", {
-    method: "POST",
-    body: formData,
-    mode: "cors",
-  })
-
-.then((response) => response.json())
-.then((data) => handleResponseOk(data))
-.catch((error) => handleResponseError(error));
-}
+    fetch("https://popmart-backend-beta.vercel.app/api/products", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => handleResponseOk(data))
+      .catch((error) => handleResponseError(error));
+  };
 
   const productImageData = () => {
     if (imageBlob) {
