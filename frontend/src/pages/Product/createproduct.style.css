@@ -2,17 +2,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 100vw;
-  padding: 20px;
-  position: relative;
-  box-sizing: border-box;
+  padding: 30px;
+  width: 100%;
+  height: 100%;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  width: 90em;
+  height: auto;
+  align-items: center;
+  margin: 0 auto;
+  /* overflow: unset; */
 }
 
 .create-product form {
-  flex: 1;
-  max-width: 35vw;
-  max-height: 90vh;
-  padding: 20px;
+  /* flex: 1; */
+  max-width: 90%;
+  /* max-height: 85vh; */
+  height: 100%;
+  padding: 10px 20px;
   border-radius: 20px;
   box-shadow: 4px 10px 12px rgba(0, 0, 0, 0.2);
   background-color: #ffffff;
@@ -24,29 +34,19 @@
   width: 100%;
   display: flex;
   justify-content: left;
+  margin: 0;
 }
 
 .title-container > h2,
 .card-preview-title {
+  margin: 5px 0 0 0;
   font-family: Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
     Droid Sans, Helvetica Neue, sans-serif;
   margin-bottom: 20px;
-  font-size: 1.5rem;
+  font-size: 1.5em;
   font-weight: 700;
   color: #333;
 }
-
-/* .popmart-logo-container {
-  position: absolute;
-  left: 10px;
-  top: calc(100% - 10px);
-  width: 50px;
-  height: 20px;
-}
-
-.popmart-logo {
-  width: 200px;
-} */
 
 .form-field {
   display: flex;
@@ -56,16 +56,16 @@
 
 .form-field p {
   margin: 5px;
-  font-size: 1rem;
+  font-size: 0.8em;
 }
 
 .input-text,
 .input-number,
 .input-textarea {
   width: 100%;
-  height: 40px;
+  height: 2em;
   color: #555;
-  font-size: 1rem;
+  font-size: 0.8rem;
   margin: 0 0 8px;
   border: 1px solid gray;
   border-radius: 0.5rem;
@@ -75,12 +75,13 @@
 }
 
 .input-textarea {
-  height: 80px;
+  height: 3.5em;
 }
-
-.input-number::-webkit-inner-spin-button,
-.input-number::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+.input-file {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .input-text:focus,
@@ -100,72 +101,84 @@
 }
 
 .card-preview-container {
+  margin: 20px 0;
   height: auto;
-  width: 100%;
-  max-width: 350px;
   display: flex;
   padding: 20px;
   flex-direction: column;
   align-items: center;
-  background-color: rgb(233, 233, 233);
-  border-radius: 0px 50px 50px 0px;
-  box-shadow: 2px 8px 12px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
 }
 
 .card-preview-title {
   text-align: center;
+  margin: 0 0 10px 0;
 }
 
-/* Estilos para tabletas */
-@media (max-width: 768px) {
-  .create-product {
-    flex-direction: column;
-    padding: 10px;
+@media (min-width: 768px) {
+  .form-container {
+    flex-direction: row;
+    width: auto;
   }
-
-  .create-product form {
+  .form-container > form {
+    margin: 0 auto;
     max-width: 90%;
-    padding: 15px;
+    width: 28em;
+    height: 35em;
   }
-
-  .title-container > h2, .card-preview-title {
-    font-size: 1.5rem;
-  }
-
-  .input-text, .input-number, .input-textarea {
-    font-size: 0.9rem;
-  }
-
   .card-preview-container {
-    width: 90%;
-    max-width: none;
+    height: 31em;
+    background-color: rgb(233, 233, 233);
+    border-radius: 0px 50px 50px 0px;
+    box-shadow: 2px 8px 12px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
   }
 }
 
-/* Estilos para móviles */
-@media (max-width: 480px) {
-  .create-product {
-    padding: 5px;
+@media (min-width: 1024px) {
+  .form-container form {
+    margin: 0 auto;
+    height: auto;
+    width: 32em;
   }
-
-  .create-product form {
-    max-width: 100%;
-    padding: 10px;
+  .form-field p {
+    font-size: 1em;
   }
-
-  .title-container > h2, .card-preview-title {
-    font-size: 1.2rem;
+  .input-text,
+  .input-number,
+  .input-textarea {
+    height: 3.5em;
   }
-
-  .input-text, .input-number, .input-textarea {
-    font-size: 0.8rem;
+  .input-textarea {
+    height: 5em;
   }
-
   .card-preview-container {
-    width: 100%;
-    max-width: none;
-    background-color: #ffffff;
-    box-shadow: none;
+    height: 34em;
+    width: 22em;
+  }
+}
+@media (min-width: 1700px) {
+  .form-container form{
+    width: 35em;
+    height: 42em;
+  }
+  .title-container > h2,
+  .card-preview-title{
+    margin-top: 10px;
+    font-size: 2em;
+  }
+  .form-field p {
+    font-size: 1.2em;
+  }
+  .input-text,
+  .input-number,
+  .input-textarea {
+    height: 3.8em;
+  }
+  .input-textarea {
+    height: 6em;
+  }
+  .card-preview-container {
+    height: 37em;
+    width: 25em;
   }
 }

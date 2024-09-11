@@ -1,123 +1,184 @@
 .card-container {
-  border: 1px solid #ddd; 
-  border-radius: 12px; 
-  overflow: hidden; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
-  transition: transform 0.2s, box-shadow 0.2s; 
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
-  width: 20vw; 
-  height: 60vh;
-  margin: 10px; 
   background-color: #fff;
-  box-sizing: border-box; 
+  box-sizing: border-box;
+  width: 12em;
+  height: 18em;
+  margin: 5px;
 }
 
 .card-container:hover {
-  transform: scale(1.05); 
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
+  transform: scale(1.03);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .product-image {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%; 
-  height: 300px; 
-  margin-top: 1rem;
-  padding: 10px;
-  object-fit: cover; 
+  width: 100%;
+  height: 12em;
+  padding: 5px;
+  object-fit: cover;
 }
 
 .product-image img {
   max-width: 100%;
-  max-height: 100%; 
+  max-height: 100%;
 }
 
 .card-container h3 {
-  font-size: 1.2rem; 
-  margin: 10px 0; 
-  color: #333; 
+  font-size: 0.7em;
+  margin: 10px 0;
+  color: #333;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-container p {
-  font-size: 1rem; 
-  color: #666; 
-  margin: 0 0 10px; 
+  font-size: 0.8em;
+  color: #666;
+  margin: 0 0 10px;
   padding: 0 10px;
 }
 
 .card-container a {
-  text-decoration: none; 
-  color: inherit; 
+  text-decoration: none;
+  color: inherit;
 }
 
-@media (max-width: 1025px) {
+@media (min-width: 480px) {
   .card-container {
-    width: 20vw; 
-    height: 45vh; 
+    width: 13em;
+    margin: 0 auto;
+    height: 23em;
   }
-}
-
-@media (max-width: 1024px) {
-  .card-container {
-    width: 20vw; 
-    height: 45vh; 
+  .card-container h3{
+    height: 3em;
+    padding: 5px;
+  }
+  .card-container h3,
+  .card-container p {
+    font-size: 1.1rem;
+  }
+  
+  .card-container p {
+    margin-top: 20px;
   }
   .product-image {
-    height: 200px; 
+    height: 15em;
+  }
+
+}
+@media (min-width: 800px) {
+  .card-container {
+    width: 14em;
+    margin: 0 auto;
+    height: 23em;
+  }
+  .card-container h3 {
+    height: 3em;
+    padding: 5px;
+  }
+  .card-container h3,
+  .card-container p {
+    font-size: 1.1rem;
+  }
+  .product-image {
+    height: 16em;
+  }
+}
+@media (min-width: 1024px) {
+  .card-container {
+    width: 16em;
+    margin: 0 auto;
+    height: 26em;
+  }
+  .card-container h3,
+  .card-container p {
+    font-size: 1.2em;
+  }
+  .product-image {
+    height: 18em;
+  }
+  @media (min-width: 1154px) {
+    .card-container {
+      width: 17em;
+      margin: 0 auto;
+      height: 27em;
+    }
+  }
+}
+
+/*
+@media (max-width: 1024px) {
+  .card-container {
+    width: 20vw;
+    height: 45vh;
+  }
+  .product-image {
+    height: 200px;
   }
 }
 
 @media (max-width: 912px) {
   .card-container {
-    width: 30vw; 
-    height: 50vh; 
+    width: 30vw;
+    height: 50vh;
   }
   .product-image {
-    height: 250px; 
+    height: 250px;
   }
 }
 
 @media (max-width: 828px) {
   .card-container {
-    width: 30vw; 
-    height: auto; 
+    width: 30vw;
+    height: auto;
   }
 
   .product-image {
-    height: 250px; 
+    height: 250px;
   }
 
   .card-container h3 {
-    font-size: 1rem; 
+    font-size: 1rem;
   }
 
   .card-container p {
-    font-size: 0.9rem; 
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
   .card-container {
-    max-width: 90vw; 
-    height: auto; 
-    margin: 5px; 
+    width: 40vw;
+    height: auto;
+    margin: 5px;
   }
 
   .product-image {
-    height: 200px; 
+    height: 200px;
   }
 
   .card-container h3 {
-    font-size: 0.9rem; 
+    font-size: 0.9rem;
   }
 
   .card-container p {
-    font-size: 0.8rem; 
+    font-size: 0.8rem;
   }
-}
+} */
 
-@media (max-width: 300px) {
+/* @media (max-width: 300px) {
   .card-container {
     width: 100vw; 
     height: auto; 
@@ -135,4 +196,4 @@
   .card-container p {
     font-size: 0.8rem; 
   }
-}
+} */
