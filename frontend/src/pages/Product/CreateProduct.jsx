@@ -59,7 +59,7 @@ function CreateProduct() {
     formData.append("category", category);
     formData.append("productImage", image);
 
-    fetch("https://popmart-backend.vercel.app/api/products", {
+    fetch("https://popmart-backend-beta.vercel.app/api/products", {
       method: "POST",
       body: formData,
     })

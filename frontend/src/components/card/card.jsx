@@ -24,7 +24,7 @@ const Card = ({ product }) => {
               <img
                 src="https://via.placeholder.com/150"
                 alt={product.title}
-                className="product-image"
+                className="product-image-placeholder"
               />
             </div>
           )}
