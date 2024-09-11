@@ -13,7 +13,7 @@ const app = express();
 
 const allowedOrigins = [
     'http://localhost:5173',     // Tu entorno de desarrollo local
-    'https://popmart-frontend-psi.vercel.app/'  // URL de tu frontend desplegado
+    'https://popmart-frontend-psi.vercel.app'  // URL de tu frontend desplegado
   ];
 
 //  Middlewares
