@@ -10,19 +10,23 @@ const Card = ({ product }) => {
         <Carousel>
           {product.productImage && product.productImage.length > 0 ? (
             product.productImage.map((image) => (
-              <img
+              <div className="image-container">
+                <img
                 key={image.public_id}
                 src={image.secure_url}
                 alt={product.title}
                 className="product-image"
               />
+              </div>
             ))
           ) : (
-            <img
-              src="https://via.placeholder.com/150"
-              alt={product.title}
-              className="product-image"
-            />
+            <div className="image-container">
+              <img
+                src="https://via.placeholder.com/150"
+                alt={product.title}
+                className="product-image"
+              />
+            </div>
           )}
         </Carousel>
         <div className="product-detail">
