@@ -8,25 +8,23 @@ import NavBar from "../../components/Navbar";
 
 function CreateProduct() {
   const [title, setTitle] = useState("");
-  const [price, setPrice] = useState('0.00');
+  const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
   const [imageBlob, setImageBlob] = useState("");
   const [response, setResponse] = useState();
 
-
-
   const handleImage = (e) => {
-    const files = e.target.files;
-    setImage(files); 
+    setImage(e.target.files[0]);
+    console.log(e.target.files[0]);
 
-    if (files) {
-      const urlBlobArray = Array.from(files).map(file => URL.createObjectURL(file));
-      setImageBlob(urlBlobArray); // Guardar múltiples blobs en un array
-      console.log(urlBlobArray);
+    if (e.target.files[0]) {
+      const urlBlob = URL.createObjectURL(e.target.files[0]);
+      setImageBlob(urlBlob);
+      console.log(urlBlob);
     }
-};
+  };
 
   const resetAllFields = () => {
     setTitle("");
@@ -93,14 +91,21 @@ const handleSubmit = (e) => {
     <>
       <NavBar />
       <div className="create-product">
-        {/* <div className="popmart-logo-container">
-          <img src={logoImage} alt="PopMart logo" className="popmart-logo" />
-        </div> */}
+        <img
+          src={logoImage}
+          alt="PopMart logo"
+          style={{
+            width: 300,
+            height: 300,
+            marginRight: 5,
+            position: "absolute",
+            top: 30,
+          }}
+        />
         <form action="" id="myForm" onSubmit={(e) => handleSubmit(e)}>
           <div className="title-container">
             <h2 className="form-title">Create a Product</h2>
           </div>
-          <img src={logoImage} alt="PopMart logo" style={{ width: 150, height: 150, marginRight: 3}} />
           <div className="inputs-container">
             <label htmlFor="title" className="form-field">
               <p>Title</p>

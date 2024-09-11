@@ -2,170 +2,42 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 100vw;
-  padding: 20px;
-  position: relative;
-  box-sizing: border-box;
+  min-height: 100vh;
 }
 
 .create-product form {
-  flex: 1;
-  max-width: 35vw;
-  max-height: 90vh;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 4px 10px 12px rgba(0, 0, 0, 0.2);
-  background-color: #ffffff;
-  position: relative;
-  box-sizing: border-box;
-}
-
-.title-container {
-  width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 20px;
+  background-color: rgb(171, 127, 96);
+  width: 300px;
 }
-
-.title-container > h2,
-.card-preview-title {
-  font-family: Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
-    Droid Sans, Helvetica Neue, sans-serif;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #333;
-}
-
-/* .popmart-logo-container {
-  position: absolute;
-  left: 10px;
-  top: calc(100% - 10px);
-  width: 50px;
-  height: 20px;
-}
-
-.popmart-logo {
-  width: 200px;
-} */
 
 .form-field {
   display: flex;
   flex-direction: column;
-  align-items: start;
 }
 
 .form-field p {
   margin: 5px;
-  font-size: 1rem;
-}
-
-.input-text,
-.input-number,
-.input-textarea {
-  width: 100%;
-  height: 40px;
-  color: #555;
-  font-size: 1rem;
-  margin: 0 0 8px;
-  border: 1px solid gray;
-  border-radius: 0.5rem;
-  outline: none;
-  padding: 0 0 0 1rem;
-  background: none;
-}
-
-.input-textarea {
-  height: 80px;
-}
-
-.input-number::-webkit-inner-spin-button,
-.input-number::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-}
-
-.input-text:focus,
-.input-number:focus,
-.input-textarea:focus {
-  border: 1px solid #2591f0;
-}
-
-.buttons-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .submit-button {
-  margin: 20px 0px;
+  margin: 20px;
 }
 
-.card-preview-container {
-  height: auto;
-  width: 100%;
-  max-width: 350px;
-  display: flex;
-  padding: 20px;
-  flex-direction: column;
-  align-items: center;
-  background-color: rgb(233, 233, 233);
-  border-radius: 0px 50px 50px 0px;
-  box-shadow: 2px 8px 12px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
+.card-preview-container{
+  margin: 20px;
 }
 
-.card-preview-title {
+.card-preview-title{
   text-align: center;
 }
 
-/* Estilos para tabletas */
-@media (max-width: 768px) {
-  .create-product {
-    flex-direction: column;
-    padding: 10px;
-  }
-
-  .create-product form {
-    max-width: 90%;
-    padding: 15px;
-  }
-
-  .title-container > h2, .card-preview-title {
-    font-size: 1.5rem;
-  }
-
-  .input-text, .input-number, .input-textarea {
-    font-size: 0.9rem;
-  }
-
-  .card-preview-container {
-    width: 90%;
-    max-width: none;
-  }
-}
-
-/* Estilos para móviles */
-@media (max-width: 480px) {
-  .create-product {
-    padding: 5px;
-  }
-
-  .create-product form {
-    max-width: 100%;
-    padding: 10px;
-  }
-
-  .title-container > h2, .card-preview-title {
-    font-size: 1.2rem;
-  }
-
-  .input-text, .input-number, .input-textarea {
-    font-size: 0.8rem;
-  }
-
-  .card-preview-container {
-    width: 100%;
-    max-width: none;
-    background-color: #ffffff;
-    box-shadow: none;
-  }
+label {
+  margin: 2px;
+  padding: 3px;
 }
