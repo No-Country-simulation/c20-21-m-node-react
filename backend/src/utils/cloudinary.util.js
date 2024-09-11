@@ -1,7 +1,23 @@
-import fileUpload from "express-fileupload";
-import { PATH_TEMP_IMAGES } from "../config.js";
+import { v2 as cloudinary } from "cloudinary";
+import { CLOUDINARY, PATH_CLOUDINARY_IMAGES } from "../config.js";
 
-export const uploadImages = fileUpload({
-  useTempFiles: true,
-  tempFileDir: `./${PATH_TEMP_IMAGES}`,
+cloudinary.config({
+  cloud_name: CLOUDINARY.CLOUD_NAME,
+  api_key: CLOUDINARY.API_KEY,
+  api_secret: CLOUDINARY.API_SECRET,
+  secure: true,
 });
+
+export const uploadImages = async (imagePath) => {
+  try {
+    return await cloudinary.uploader.upload(imagePath, {
+      folder: PATH_CLOUDINARY_IMAGES,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteImage = async (publicId) => {
+  return await cloudinary.uploader.destroy(publicId);
+};
