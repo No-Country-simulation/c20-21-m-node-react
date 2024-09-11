@@ -1,3 +1,7 @@
+.navbar-container{
+  max-width: 100%;
+}
+
 .home-container {
     max-width: 1200px;
     margin: 0 auto;

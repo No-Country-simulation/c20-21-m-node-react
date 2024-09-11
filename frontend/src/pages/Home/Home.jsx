@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import Cards from "../../components/cards/cards";
-import logoImage from '../../assets/logoImage.svg';
+import logoImage from "../../assets/logoImage.svg";
 import "./home.styles.css";
 
 export const Home = () => {
-  const [products, setProducts] = useState([]);  
-  const [filteredProducts, setFilteredProducts] = useState([]);  
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [orderBy, setOrderBy] = useState({ field: "title", order: "asc" });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const productsPerPage = 9;
 
   useEffect(() => {
-    fetch(`https://popmart-backend-beta.vercel.app/api/products?limit=${productsPerPage}&page=${page}`)
+    fetch(
+      `https://popmart-backend-beta.vercel.app/api/products?limit=${productsPerPage}&page=${page}`
+    )
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
           setProducts(data.payload);
-          setFilteredProducts(data.payload); 
+          setFilteredProducts(data.payload);
           setTotalPages(data.totalPages);
         } else {
           console.error("Error fetching products:", data.error);
@@ -58,10 +60,15 @@ export const Home = () => {
 
   return (
     <>
-      <NavBar onSearch={handleSearch} /> 
+      <div className="navbar-container">
+        <NavBar onSearch={handleSearch} />
+      </div>
       <div className="home-container">
-        
-        <img src={logoImage} alt="PopMart logo" style={{ width: 300, height: 300, marginRight: 5}} />
+        <img
+          src={logoImage}
+          alt="PopMart logo"
+          style={{ width: 300, height: 300, marginRight: 5 }}
+        />
         <br />
 
         <button className="filter-button" onClick={toggleOrder}>

@@ -46,12 +46,12 @@
 }
 @media (min-width: 1024px) {
   .carousel-buttons {
-    gap: 15vw;
+    gap: 10em;
   }
 }
 
 @media (min-width: 1154px) {
   .carousel-buttons {
-    gap: 13vw;
+    gap: 12em;
   }
 }
