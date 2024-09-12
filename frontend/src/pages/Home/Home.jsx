@@ -17,7 +17,7 @@ export const Home = () => {
     
     const query = searchQuery ? `&query=${searchQuery}` : '';
     fetch(
-      `https://popmart-backend-beta.vercel.app/api/products?limit=${productsPerPage}&page=${page}${query}`
+      import.meta.env.VITE_URL_BACKEND+`/api/products?limit=${productsPerPage}&page=${page}${query}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -30,6 +30,7 @@ export const Home = () => {
         }
       })
       .catch((error) => console.error("Error fetching products:", error));
+
   }, [page, searchQuery]); 
 
   const toggleOrder = () => {

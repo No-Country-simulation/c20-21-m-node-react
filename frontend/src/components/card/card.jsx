@@ -9,8 +9,8 @@ const Card = ({ product }) => {
       <Link to={`/home/${product._id}`}>
         <Carousel>
           {product.productImage && product.productImage.length > 0 ? (
-            product.productImage.map((image) => (
-              <div className="image-container">
+            product.productImage.map((image, index) => (
+              <div key={index} className="image-container">
                 <img
                 key={image.public_id}
                 src={image.secure_url}
