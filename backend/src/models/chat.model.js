@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 const chatSchema = new mongoose.Schema({
-  integrantes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  mensajes: [
+  users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  messages: [
     {
       emisor: {
         type: mongoose.Schema.Types.ObjectId,
