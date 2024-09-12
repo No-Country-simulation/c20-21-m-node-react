@@ -19,4 +19,4 @@ const chatSchema = new mongoose.Schema({
 //  Plugin del paginate
 chatSchema.plugin(mongoosePaginate);
 
-export const ChatModel = mongoose.model("chats", chatSchema);
+export const ChatModel = mongoose.model("Chat", chatSchema, "chats");

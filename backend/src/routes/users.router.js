@@ -7,6 +7,7 @@ import {
   updateUser,
   deleteUser,
   loginUser,
+  addProduct
 } from "../controllers/user.controllers.js";
 import multer from "multer";
 
@@ -30,10 +31,16 @@ app.post("/", upload.array("image"), createUser);
 // POST login user ✅
 app.post("/login", loginUser);
 
-// UPDATE user by me 🚧
-app.put("/", updateUser);
+// POST prodcuto al array de ProductsID.
+app.post("/:uid/product/:pid", addProduct);
 
-// DELETE user by me 🚧
-app.delete("/", deleteUser);
+// POST login user ✅
+app.post("/login", loginUser);
+
+// UPDATE user by me ✅
+app.put("/:id", updateUser);
+
+// DELETE user by me ✅
+app.delete("/:id", deleteUser);
 
 export default app;

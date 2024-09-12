@@ -12,25 +12,25 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     require: true,
-    unique:true,
+    unique: true,
   },
   password: {
     type: String,
     require: true,
   },
   image: [
-  {
-    type: String
-  }
+    {
+      type: String
+    }
   ],
-  productsId: [{
+  products: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'products'
+    ref: 'Product'
   }],
-  chatsId: [{
+  chats: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'chats'
-  }],
+    ref: 'Chat'
+  }]
 });
 
 // el password hasheado no debería mostrarse, para que no se muestre se usa el codigo de abajo
@@ -41,4 +41,4 @@ const userSchema = new mongoose.Schema({
 //   },
 // });
 
-export const UserModel = mongoose.model("User", userSchema);
+export const UserModel = mongoose.model("User", userSchema, "users");

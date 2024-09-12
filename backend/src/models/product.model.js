@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema(
     },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", 
+      ref: "User",
     },
   },
   { timestamps: true }
@@ -36,4 +36,4 @@ const productSchema = new mongoose.Schema(
 //   Plugin del paginate
 productSchema.plugin(mongoosePaginate);
 
-export const ProductModel = mongoose.model("products", productSchema);
+export const ProductModel = mongoose.model("Product", productSchema, "products");
