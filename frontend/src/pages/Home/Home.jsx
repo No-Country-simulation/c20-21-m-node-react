@@ -10,11 +10,14 @@ export const Home = () => {
   const [orderBy, setOrderBy] = useState({ field: "title", order: "asc" });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(''); 
   const productsPerPage = 9;
 
   useEffect(() => {
+    
+    const query = searchQuery ? `&query=${searchQuery}` : '';
     fetch(
-      `https://popmart-backend-beta.vercel.app/api/products?limit=${productsPerPage}&page=${page}`
+      `https://popmart-backend-beta.vercel.app/api/products?limit=${productsPerPage}&page=${page}${query}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -27,7 +30,7 @@ export const Home = () => {
         }
       })
       .catch((error) => console.error("Error fetching products:", error));
-  }, [page]);
+  }, [page, searchQuery]); 
 
   const toggleOrder = () => {
     const newOrder = orderBy.order === "asc" ? "desc" : "asc";
@@ -52,10 +55,7 @@ export const Home = () => {
   };
 
   const handleSearch = (searchValue) => {
-    const filtered = products.filter((product) =>
-      product.title.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setFilteredProducts(filtered);
+    setSearchQuery(searchValue); 
   };
 
   return (
