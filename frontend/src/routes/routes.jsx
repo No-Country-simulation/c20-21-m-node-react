@@ -5,6 +5,7 @@ import HomeLayout from '../layouts/HomeLayout';
 import Error404 from '../pages/Error/Error404';
 import { LandingPage } from '../pages/Landing/Landing';
 import CreateProduct from '../pages/Product/CreateProduct';
+import { Chat } from '../pages/Chat/Chat'; // Importar el componente Chat
 
 const MyRoutes = () => {
     return (
@@ -14,12 +15,14 @@ const MyRoutes = () => {
                     <Route index element={<Home />} />
                     <Route path=":id" element={<Detail />} />
                 </Route>
+                
+                <Route path="/chat/:sellerId" element={<Chat />} />
+                
                 <Route path="*" element={<Error404 />} />
                 <Route path='' element={<LandingPage />} />
                 <Route path="/product">
                     <Route path='create' element={<CreateProduct />} />
                 </Route>
-
             </Routes>
         </>
     );

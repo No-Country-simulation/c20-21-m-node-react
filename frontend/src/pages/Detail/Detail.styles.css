@@ -40,3 +40,17 @@
 .return-button:hover {
     background-color: #0056b3;
 }
+
+.chat-button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.chat-button:hover {
+    background-color: #218838;
+}
