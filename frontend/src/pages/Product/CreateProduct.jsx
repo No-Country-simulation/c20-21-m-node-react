@@ -58,7 +58,7 @@ const handleSubmit = (e) => {
   formData.append("category", category);
   formData.append("productImage", image);
 
-    fetch("https://popmart-backend-beta.vercel.app/api/products", {
+    fetch(import.meta.env.VITE_URL_BACKEND+"/api/products", {
       method: "POST",
       body: formData,
     })
@@ -89,9 +89,6 @@ const handleSubmit = (e) => {
     <>
       <NavBar />
       <div className="create-product">
-        {/* <div className="popmart-logo-container">
-          <img src={logoImage} alt="PopMart logo" className="popmart-logo" />
-        </div> */}
         <div className="form-container">
           <form action="" id="myForm" onSubmit={(e) => handleSubmit(e)}>
             <div className="title-container">
