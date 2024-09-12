@@ -31,16 +31,13 @@ app.post("/", upload.array("image"), createUser);
 // POST login user ✅
 app.post("/login", loginUser);
 
-// POST prodcuto al array de ProductsID.
+// Asociar producto con el usuario, se agrega al array de products. ✅
 app.post("/:uid/product/:pid", addProduct);
 
-// POST login user ✅
-app.post("/login", loginUser);
-
-// UPDATE user by me ✅
+// UPDATE user by id. ✅
 app.put("/:id", updateUser);
 
-// DELETE user by me ✅
+// DELETE user by id. ✅
 app.delete("/:id", deleteUser);
 
 export default app;

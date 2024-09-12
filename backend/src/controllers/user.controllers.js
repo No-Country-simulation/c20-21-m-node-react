@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { config } from "../config.js";
 import jwt from "jsonwebtoken"
 
+// GET all users ✅
 export const getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.find({}).populate("products").populate("chats");
@@ -15,10 +16,11 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+// GET user by id ✅
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate("products").populate("chats");
 
     res.status(200).json(user);
   } catch (e) {
@@ -29,6 +31,7 @@ export const getUserById = async (req, res) => {
   }
 };
 
+// GET user by email (Para olvide contraseña) ✅
 export const getUserByEmail = async (req, res) => {
   try {
     const { email } = req.body;
@@ -80,6 +83,7 @@ export const getUserByEmail = async (req, res) => {
   }
 };
 
+// POST create user ✅
 export const createUser = async (req, res) => {
   try {
     const {
@@ -150,6 +154,7 @@ export const createUser = async (req, res) => {
   }
 };
 
+// POST login user ✅
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -181,6 +186,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// Asociar producto con el usuario, se agrega al array de products. ✅
 export const addProduct = async (req, res) => {
   try {
     const { uid, pid } = req.params
@@ -192,6 +198,16 @@ export const addProduct = async (req, res) => {
         status: "Error.",
         message: "No existe un usuario con ese id.",
         error: "No existe un usuario con ese id."
+      });
+    }
+
+    // Verificar si el pid ya está en el array products del User
+    const productExists = user.products.some(product => product._id.toString() === pid);
+    if (productExists) {
+      return res.status(400).json({
+        status: "Error.",
+        message: "El producto ya está asociado con este usuario.",
+        error: "El producto ya está asociado con este usuario."
       });
     }
 
@@ -208,7 +224,7 @@ export const addProduct = async (req, res) => {
       message: "Se ha asocciado un producto al user.",
       data: user
     });
-  } catch (e) {
+  } catch (error) {
     res.status(500).json({
       status: "Error.",
       message: "Error al intentar agregar un producto.",
@@ -219,6 +235,7 @@ export const addProduct = async (req, res) => {
 
 // No son necesarios.
 
+// Delete user by id. ✅
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -245,7 +262,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-
+// UPDATE user by id. ✅
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params; // Obtiene el ID de los parámetros de la ruta
