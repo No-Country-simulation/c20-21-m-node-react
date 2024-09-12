@@ -26,7 +26,6 @@ function Register() {
   }
 
   const handleResponseOk = (data) => {
-    console.log(data);
     toast.success('Product created successfully');
     resetAllFields();
     setTimeout(()=>navigate("/"), 2000)
@@ -49,8 +48,6 @@ function Register() {
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
-    console.log(regex.test(password))
-
     setPasswordError("")
   }
 
