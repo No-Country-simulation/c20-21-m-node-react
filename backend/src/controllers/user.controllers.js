@@ -3,9 +3,10 @@ import nodemailer from "nodemailer";
 import { config } from "../config.js";
 import jwt from "jsonwebtoken"
 
-export const getAllUsers = async (_, res) => {
+// GET all users ✅
+export const getAllUsers = async (req, res) => {
   try {
-    const users = await UserModel.find({});
+    const users = await UserModel.find({}).populate("products").populate("chats");
 
     res.status(200).json(users);
   } catch (e) {
@@ -15,10 +16,11 @@ export const getAllUsers = async (_, res) => {
   }
 };
 
+// GET user by id ✅
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate("products").populate("chats");
 
     res.status(200).json(user);
   } catch (e) {
@@ -29,6 +31,7 @@ export const getUserById = async (req, res) => {
   }
 };
 
+// GET user by email (Para olvide contraseña) ✅
 export const getUserByEmail = async (req, res) => {
   try {
     const { email } = req.body;
@@ -80,20 +83,23 @@ export const getUserByEmail = async (req, res) => {
   }
 };
 
+// POST create user ✅
 export const createUser = async (req, res) => {
   try {
-    const { 
-      name, 
-      lastname, 
-      email, 
+    const {
+      name,
+      lastname,
+      email,
       password,
-      image = `https://ui-avatars.com/api/?background=random&name=${email}` 
+      image = `https://ui-avatars.com/api/?background=random&name=${email}`
     } = req.body;
 
     const userB = await UserModel.findOne({ email });
     if (userB) {
       return res.status(400).json({
-        error: "Ya existe un usuario con ese email",
+        status: "Error.",
+        message: "Ya existe un usuario con ese email.",
+        error: "Ya existe un usuario con ese email."
       });
     }
 
@@ -136,21 +142,24 @@ export const createUser = async (req, res) => {
       console.log('Correo enviado: ' + info.response);
     });
 
-    res.status(201).json(newUser);
+    res.status(201).json({
+      status: "Success",
+      message: "El User ha sido creado.",
+      data: newUser
+    });
   } catch (e) {
-    console.log(e);
-
-    res.json({
+    res.status(500).json({
       error: `Error ${e}`,
     });
   }
 };
 
+// POST login user ✅
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   const signJWT = (email, userId) => {
-    const token = jwt.sign({email: email, userId: userId}, process.env.JWT_SECRET)
+    const token = jwt.sign({ email: email, userId: userId }, process.env.JWT_SECRET)
     return token
   }
 
@@ -177,6 +186,110 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// Asociar producto con el usuario, se agrega al array de products. ✅
+export const addProduct = async (req, res) => {
+  try {
+    const { uid, pid } = req.params
+
+    // Verificar si el id del User existe.
+    const user = await UserModel.findById(uid);
+    if (!user) {
+      return res.status(400).json({
+        status: "Error.",
+        message: "No existe un usuario con ese id.",
+        error: "No existe un usuario con ese id."
+      });
+    }
+
+    // Verificar si el pid ya está en el array products del User
+    const productExists = user.products.some(product => product._id.toString() === pid);
+    if (productExists) {
+      return res.status(400).json({
+        status: "Error.",
+        message: "El producto ya está asociado con este usuario.",
+        error: "El producto ya está asociado con este usuario."
+      });
+    }
+
+    // Guardar el id en el array products del User.
+    user.products.push({
+      _id: pid
+    });
+
+    // Guardar cambios.
+    await user.save();
+
+    res.status(201).json({
+      status: "Success.",
+      message: "Se ha asocciado un producto al user.",
+      data: user
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "Error.",
+      message: "Error al intentar agregar un producto.",
+      error: error.message,
+    });
+  }
+};
+
 // No son necesarios.
-export const updateUser = () => { };
-export const deleteUser = () => { };
+
+// Delete user by id. ✅
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedUser = await UserModel.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        status: "Error.",
+        message: "User no encontrado.",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "El User ha sido borrado.",
+      data: deletedUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "Error.",
+      message: "Error al intentar borrar el User.",
+      error: error.message,
+    });
+  }
+};
+
+// UPDATE user by id. ✅
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params; // Obtiene el ID de los parámetros de la ruta
+    const userUpdate = req.body; // Obtiene los datos a actualizar del cuerpo de la solicitud
+
+    // Actualiza el usuario y devuelve el nuevo documento con { new: true }
+    const updatedUser = await UserModel.findByIdAndUpdate(id, userUpdate, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        status: "Error.",
+        message: "User no encontrado.",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "El User ha sido actualizado.",
+      data: updatedUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "Error.",
+      message: "Error al intentar actualizar el User.",
+      error: error.message,
+    });
+  }
+};
+
+
