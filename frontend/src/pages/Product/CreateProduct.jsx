@@ -41,24 +41,24 @@ function CreateProduct() {
     console.log(data);
     toast.success(data.message || 'Product created successfully');
     resetAllFields();
-};
+  };
 
-const handleResponseError = (error) => {
+  const handleResponseError = (error) => {
     console.error('Error:', error);
     toast.error(error.message || 'An error occurred');
-};
+  };
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("title", title);
-  formData.append("price", price);
-  formData.append("description", description);
-  formData.append("category", category);
-  formData.append("productImage", image);
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("price", price);
+    formData.append("description", description);
+    formData.append("category", category);
+    formData.append("productImage", image);
 
-    fetch(import.meta.env.VITE_URL_BACKEND+"/api/products", {
+    fetch(import.meta.env.VITE_URL_BACKEND + "/api/products", {
       method: "POST",
       body: formData,
     })

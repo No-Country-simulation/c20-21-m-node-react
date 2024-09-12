@@ -25,7 +25,7 @@ app.get("/:id", getUserById);
 app.post("/recover", getUserByEmail);
 
 // POST create user ✅
-app.post("/", upload.array("image"), createUser);
+app.post("/register", createUser);
 
 // POST login user ✅
 app.post("/login", loginUser);

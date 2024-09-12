@@ -6,6 +6,7 @@ import Error404 from '../pages/Error/Error404';
 import { LandingPage } from '../pages/Landing/Landing';
 import CreateProduct from '../pages/Product/CreateProduct';
 import { Chat } from '../pages/Chat/Chat'; // Importar el componente Chat
+import Register from "../pages/Register/Register";
 
 const MyRoutes = () => {
     return (
@@ -19,7 +20,8 @@ const MyRoutes = () => {
                 <Route path="/chat/:sellerId" element={<Chat />} />
                 
                 <Route path="*" element={<Error404 />} />
-                <Route path='' element={<LandingPage />} />
+                <Route path="" element={<LandingPage />} />
+                <Route path="/register" element={<Register/>} />
                 <Route path="/product">
                     <Route path='create' element={<CreateProduct />} />
                 </Route>
