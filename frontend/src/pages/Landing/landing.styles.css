@@ -17,7 +17,6 @@
 
 .login-logo {
   width: 200px;
-  margin-bottom: 20px;
 }
 
 .login-title {
@@ -58,6 +57,12 @@
 
 .login-footer {
   margin-top: 20px;
+}
+
+.login-error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
 .forgot-password,

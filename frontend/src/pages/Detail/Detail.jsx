@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import "./Detail.styles.css";
 import NavBar from "../../components/Navbar";
+import Carousel from "../../components/Carousel/Carousel.jsx"; // Importamos el carrusel
 
 export const Detail = () => {
   const { id } = useParams();
@@ -54,15 +55,28 @@ export const Detail = () => {
         <h1 className="detail-title">{product.title}</h1>
         <p className="detail-price">Price: ${product.price}</p>
         <p className="detail-description">Description: {product.description}</p>
-        <img
-          className="detail-image"
-          src={
-            product.productImage && product.productImage[0]
-              ? product.productImage[0].secure_url
-              : "https://via.placeholder.com/150"
+
+        {/* Agregamos el componente de Carrusel aquí */}
+        <Carousel>
+          {product.productImage && product.productImage.length > 0
+            ? product.productImage.map((image, index) => (
+                <img
+                  key={index}
+                  className="detail-image"
+                  src={image.secure_url}
+                  alt={product.title}
+                />
+              ))
+            : (
+              <img
+                className="detail-image"
+                src="https://via.placeholder.com/150"
+                alt="Placeholder"
+              />
+            )
           }
-          alt={product.title}
-        />
+        </Carousel>
+
         <p>Category: {product.category}</p>
         <Link to="/home/">
           <button className="return-button">Return</button>

@@ -10,14 +10,17 @@ export const Home = () => {
   const [orderBy, setOrderBy] = useState({ field: "title", order: "asc" });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [searchQuery, setSearchQuery] = useState(''); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [category, setCategory] = useState("");
   const productsPerPage = 9;
 
   useEffect(() => {
-    
-    const query = searchQuery ? `&query=${searchQuery}` : '';
+    const query = searchQuery ? `&query=${searchQuery}` : "";
     fetch(
-      import.meta.env.VITE_URL_BACKEND+`/api/products?limit=${productsPerPage}&page=${page}${query}`
+      import.meta.env.VITE_URL_BACKEND +
+        `/api/products?limit=${productsPerPage}&page=${page}${query}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -30,22 +33,51 @@ export const Home = () => {
         }
       })
       .catch((error) => console.error("Error fetching products:", error));
+  }, [page, searchQuery]);
 
-  }, [page, searchQuery]); 
+  const filterProducts = () => {
+    let filtered = [...products];
 
-  const toggleOrder = () => {
-    const newOrder = orderBy.order === "asc" ? "desc" : "asc";
-    setOrderBy({ field: "title", order: newOrder });
+    if (searchQuery) {
+      filtered = filtered.filter((product) =>
+        product.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
 
-    const sortedProducts = [...filteredProducts].sort((a, b) => {
-      const fieldA = a.title.toLowerCase();
-      const fieldB = b.title.toLowerCase();
-      const orderFactor = newOrder === "asc" ? 1 : -1;
-      return fieldA.localeCompare(fieldB) * orderFactor;
+    if (minPrice) {
+      filtered = filtered.filter(
+        (product) => product.price >= Number(minPrice)
+      );
+    }
+
+    if (maxPrice) {
+      filtered = filtered.filter(
+        (product) => product.price <= Number(maxPrice)
+      );
+    }
+
+    if (category) {
+      filtered = filtered.filter(
+        (product) => product.category.toLowerCase() === category.toLowerCase()
+      );
+    }
+
+    filtered.sort((a, b) => {
+      const titleA = a.title.toLowerCase();
+      const titleB = b.title.toLowerCase();
+      if (titleA < titleB) return orderBy.order === "asc" ? -1 : 1;
+      if (titleA > titleB) return orderBy.order === "asc" ? 1 : -1;
+      return 0;
     });
 
-    setFilteredProducts(sortedProducts);
+    setFilteredProducts(filtered);
   };
+
+  // Por si deseamos que los productos se filtren inmediatamente al poner un valor en los filtros
+  useEffect(() => {
+    filterProducts();
+  }, [orderBy, searchQuery]); // Comentar esto
+  // }, [products, searchQuery, minPrice, maxPrice, category, orderBy]); // Descomentar esto
 
   const handleNextPage = () => {
     if (page < totalPages) setPage(page + 1);
@@ -55,14 +87,17 @@ export const Home = () => {
     if (page > 1) setPage(page - 1);
   };
 
-  const handleSearch = (searchValue) => {
-    setSearchQuery(searchValue); 
+  const toggleOrder = () => {
+    setOrderBy({
+      field: "title",
+      order: orderBy.order === "asc" ? "desc" : "asc",
+    });
   };
 
   return (
     <>
       <div className="navbar-container">
-        <NavBar onSearch={handleSearch} />
+        <NavBar onSearch={setSearchQuery} />
       </div>
       <div className="home-container">
         <img
@@ -72,8 +107,40 @@ export const Home = () => {
         />
         <br />
 
+        {/* Controles de Filtros */}
+        <div className="filter-container">
+          <label>
+            Precio Mínimo:
+            <input
+              type="number"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              placeholder="Precio mínimo"
+            />
+          </label>
+          <label>
+            Precio Máximo:
+            <input
+              type="number"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              placeholder="Precio máximo"
+            />
+          </label>
+          <label>
+            Categoría:
+            <input
+              type="text"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="Categoría"
+            />
+          </label>
+          <button onClick={filterProducts}>Filtrar</button>
+        </div>
+
         <button className="filter-button" onClick={toggleOrder}>
-          Sort By Title {orderBy.order === "asc" ? "↓" : "↑"}
+          Ordenar por Título {orderBy.order === "asc" ? "↓" : "↑"}
         </button>
 
         <Cards allProducts={filteredProducts} />
@@ -84,14 +151,14 @@ export const Home = () => {
             onClick={handlePrevPage}
             disabled={page === 1}
           >
-            Previous
+            Anterior
           </button>
           <button
             className="pagination-button"
             onClick={handleNextPage}
             disabled={page === totalPages}
           >
-            Next
+            Siguiente
           </button>
         </div>
       </div>
