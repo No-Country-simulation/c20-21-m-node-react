@@ -187,6 +187,7 @@ const NavBar = ({ onSearch }) => {
       <CssBaseline />
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
+          {/* <AppBar position="static" sx={{ bgcolor: 'primary.main' }}> Esto es para manteren el color azul de la barra */}
           <Toolbar>
             <IconButton
               size="large"

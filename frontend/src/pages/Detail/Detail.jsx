@@ -56,7 +56,6 @@ export const Detail = () => {
         <p className="detail-price">Price: ${product.price}</p>
         <p className="detail-description">Description: {product.description}</p>
 
-        {/* Agregamos el componente de Carrusel aquí */}
         <Carousel>
           {product.productImage && product.productImage.length > 0
             ? product.productImage.map((image, index) => (
