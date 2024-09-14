@@ -9,6 +9,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -54,6 +55,7 @@ const NavBar = ({ onSearch }) => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [darkMode, setDarkMode] = useState(false);
+  const navigate = useNavigate(); 
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -95,6 +97,10 @@ const NavBar = ({ onSearch }) => {
     setDarkMode(!darkMode);
   };
 
+  const handleLogout = () => {
+    navigate('/'); 
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -114,6 +120,7 @@ const NavBar = ({ onSearch }) => {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
     </Menu>
   );
 
@@ -166,6 +173,12 @@ const NavBar = ({ onSearch }) => {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
+      <MenuItem onClick={handleLogout}>
+        <IconButton size="large" aria-label="Cerrar Sesión" color="inherit">
+          <AccountCircle />
+        </IconButton>
+        <p>Cerrar Sesión</p>
+      </MenuItem>
     </Menu>
   );
 
@@ -174,7 +187,7 @@ const NavBar = ({ onSearch }) => {
       <CssBaseline />
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-        {/* <AppBar position="static" sx={{ bgcolor: 'primary.main' }}> Esto es para manteren el color azul de la barra */}
+          {/* <AppBar position="static" sx={{ bgcolor: 'primary.main' }}> Esto es para manteren el color azul de la barra */}
           <Toolbar>
             <IconButton
               size="large"
