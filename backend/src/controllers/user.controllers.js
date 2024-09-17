@@ -157,6 +157,7 @@ export const createUser = async (req, res) => {
 // POST login user ✅
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  
 
   const signJWT = (email, userId) => {
     const token = jwt.sign({ email: email, userId: userId }, process.env.JWT_SECRET)
@@ -169,7 +170,7 @@ export const loginUser = async (req, res) => {
       password,
     };
     const userB = await UserModel.findOne({ email });
-
+    
     if (!userB) {
       return res.status(400).json({
         error: "User no encontrado",

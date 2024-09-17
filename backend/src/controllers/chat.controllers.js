@@ -2,40 +2,77 @@ import mongoose from "mongoose";
 import { ChatModel } from "../models/chat.model.js";
 // const users = require("../models/user.model.js");
 
+// Trae todos los chats.
 export const getAllChats = async (req, res) => {
-  const chats = await ChatModel.find({})
-  /*.populate({
-    path: "mensajes.emisor",
-    select: "name email",
-  });
-  */
-  res.status(200).json(chats);
+  try {
+    const chats = await ChatModel.find({})
+    /*.populate({
+      path: "mensajes.emisor",
+      select: "name",
+    });
+    */
+    res.status(200).json({
+      chats: chats
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "Error.",
+      message: "Error al traer los chats.",
+      Error: error
+    });
+  }
 };
 
+// Tarer un chat por id(id del chat).
 export const getChatById = async (req, res) => {
-  const { id } = req.params;
-  const chat = await ChatModel.findById(id);
+  try {
+    const { id } = req.params;
+    const chat = await ChatModel.findById(id);
 
-  res.json(chat);
+    if (!chat) {
+      return res.status(404).json({
+        status: "Error.",
+        message: "ID no encontrado."
+      });
+    }
+
+    res.status(200).json({
+      chat: chat
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "Error.",
+      message: "Error al traer los chats.",
+      Error: error
+    });
+  }
+
 };
 
 //   Crear un chat.
 export const createNewChat = async (req, res) => {
   try {
-    const { users, message } = req.body;
+    const { userId } = req.user;
+    const { ownerId } = req.body;
+    const users = [userId, ownerId];
+
+    //  Validacion de id existentes.
     if (
       !Array.isArray(users) ||
       users.some((id) => !mongoose.Types.ObjectId.isValid(id))
     ) {
-      return res.status(400).json({ error: "Integrantes inválidos" });
+      return res.status(400).json({ error: "Integrantes inválidos." });
     }
+
+
     const newChat = new ChatModel({
       users,
-      message,
+      message: []
     });
+
     const savedChat = await newChat.save();
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
       chat: savedChat,
     });
@@ -43,6 +80,56 @@ export const createNewChat = async (req, res) => {
     res.status(500).json({
       status: "error",
       message: `Error al crear el chat: ${error.message}`,
+    });
+  }
+};
+
+// Agregar mensajes en un chat.
+export const addMessages = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { contenido } = req.body;
+    const { userId } = req.user;
+
+    // Validar parámetros de entrada
+    if (!id || !contenido || !userId) {
+      return res.status(400).json({
+        status: "error",
+        message: "ID del chat, contenido del mensaje o ID del usuario faltantes."
+      });
+    }
+
+    //  Encontrar el chat por id.
+    const chat = await ChatModel.findById(id);
+
+    // Verificar si el chat existe
+    if (!chat) {
+      return res.status(404).json({
+        status: "error",
+        message: "Chat no encontrado."
+      });
+    }
+
+    //  Crear el mensaje.
+    const newMessage = {
+      emisor: userId,
+      contenido: contenido
+    }
+
+    // Pushear el mensaje.
+    chat.messages = [...chat.messages, newMessage];
+
+    //  Guardar mensaje
+    const savedMessage = await chat.save();
+
+    res.status(200).json({
+      message: savedMessage
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: `Error al agregar el mensaje. ${error}`,
     });
   }
 };
