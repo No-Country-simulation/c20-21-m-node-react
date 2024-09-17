@@ -26,7 +26,7 @@ function Register() {
   }
 
   const handleResponseOk = (data) => {
-    toast.success('Product created successfully');
+    toast.success('User created successfully');
     resetAllFields();
     setTimeout(()=>navigate("/"), 2000)
     

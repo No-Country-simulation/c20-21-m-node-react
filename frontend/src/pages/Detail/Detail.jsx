@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import "./Detail.styles.css";
 import NavBar from "../../components/Navbar";
-import Carousel from "../../components/Carousel/Carousel.jsx"; // Importamos el carrusel
+import Carousel from "../../components/Carousel/Carousel.jsx";
 
 export const Detail = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
 
   //Prueba
-  const sellerId = "123456789"; 
-  
+  const sellerId = "123456789";
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -59,21 +59,23 @@ export const Detail = () => {
         <Carousel>
           {product.productImage && product.productImage.length > 0
             ? product.productImage.map((image, index) => (
-                <img
-                  key={index}
-                  className="detail-image"
-                  src={image.secure_url}
-                  alt={product.title}
-                />
+                <div className="detail-image-container" key={index}>
+                  <img
+                    className="detail-image"
+                    src={image.secure_url}
+                    alt={product.title}
+                  />
+                </div>
               ))
             : (
-              <img
-                className="detail-image"
-                src="https://via.placeholder.com/150"
-                alt="Placeholder"
-              />
-            )
-          }
+              <div className="detail-image-container">
+                <img
+                  className="detail-image"
+                  src="https://via.placeholder.com/150"
+                  alt="Placeholder"
+                />
+              </div>
+            )}
         </Carousel>
 
         <p>Category: {product.category}</p>

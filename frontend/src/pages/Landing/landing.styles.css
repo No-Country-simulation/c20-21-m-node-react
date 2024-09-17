@@ -69,8 +69,10 @@
 .create-account {
   color: #007bff;
   text-decoration: none;
+  cursor: pointer;
+  font-weight: bold;
   margin: 10px 0;
-  display: block;
+  display: inline-block;
 }
 
 .guest-button {
