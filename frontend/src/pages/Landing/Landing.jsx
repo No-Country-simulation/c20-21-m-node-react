@@ -3,37 +3,50 @@ import "./landing.styles.css";
 import logoImage from "../../assets/logoImage.svg";
 import { useNavigate } from "react-router-dom";
 
-const usuariosPrueba = [
-  { email: "test1@example.com", password: "password123" },
-  { email: "test2@example.com", password: "password456" },
-  { email: "admin@example.com", password: "adminpass" },
-];
-
 export const LandingPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
 
-    const user = usuariosPrueba.find(
-      (u) => u.email === email && u.password === password
-    );
+    const body = {
+      email: email,
+      password: password,
+    };
 
-    if (user) {
-      localStorage.setItem("token", "mockToken123");
-      navigate("/home");
-    } else {
-      setError("Correo o contraseña incorrectos");
+    try {
+      const response = await fetch(import.meta.env.VITE_URL_BACKEND + "/api/users/login", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      } else {
+        setError(data.message || "Correo o contraseña incorrectos");
+      }
+    } catch (error) {
+      setError("Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.");
     }
   };
 
   const handleGuestLogin = () => {
-    localStorage.setItem("guest", true); // Marcar como invitado en el localStorage
+    localStorage.setItem("guest", true); 
     navigate("/home");
+  };
+
+  const handleCreateAccount = () => {
+    navigate("/register");
   };
 
   return (
@@ -76,7 +89,8 @@ export const LandingPage = () => {
           <a href="#" className="forgot-password">
             ¿Olvidaste tu contraseña?
           </a>
-          <a href="#" className="create-account">
+
+          <a onClick={handleCreateAccount} className="create-account">
             Crear cuenta nueva
           </a>
         </div>
