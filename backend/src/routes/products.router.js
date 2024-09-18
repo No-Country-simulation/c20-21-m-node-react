@@ -1,10 +1,12 @@
 import { Router } from "express";
+import auth from '../middlewares/auth.js'
 import {
   getAllProducts,
   getProductById,
   createProduct,
   updateProductById,
   deleteProductById,
+  getProductsByUser,
 } from "../controllers/product.controllers.js";
 import { uploadImages } from '../middlewares/cloudinary.middleware.js'
 
@@ -13,8 +15,12 @@ const app = Router();
 // GET all products ✅
 app.get("/", getAllProducts);
 
+// GET user by id ✅
+app.get("/posts", auth, getProductsByUser);
+
 // GET product by id ✅ TODO > add middleware: auth
 app.get("/:productId", getProductById);
+
 
 // POST create product ✅ TODO > add middleware: auth
 app.post("/", uploadImages, createProduct);

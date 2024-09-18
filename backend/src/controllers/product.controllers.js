@@ -1,6 +1,6 @@
 import { ProductModel } from "../models/product.model.js";
 import { UserModel } from "../models/user.model.js";
-import { uploadImages} from "../utils/cloudinary.util.js";
+import { uploadImages } from "../utils/cloudinary.util.js";
 import fs from "fs-extra";
 
 export const getAllProducts = async (req, res) => {
@@ -53,26 +53,52 @@ export const getAllProducts = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   try {
-    const { productId } = req.params;
-    const product = await ProductModel.findOne({
-      _id: productId,
-    });
+    const { userId } = req.user;
 
-    if (!product) {
-      return res.status(404).json({
-        status: "error",
-        message: "No se encontró el producto",
-        error: error,
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
       });
     }
 
-    res.status(200).json(product);
+    const user = await UserModel.findById(userId).populate("products"); // Asegúrate de usar .populate si products son ObjectIds de otro modelo
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const { products } = user;
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: "Products not found" });
+    }
+
+    return res.status(200).json({ products }); // Cambia 'message' a 'products'
   } catch (error) {
-    res.status(400).json({
-      status: "error",
-      message: "Error al buscar el producto",
-      error: error,
-    });
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Error retrieving products", error });
+  }
+};
+
+export const getProductsByUser = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
+      });
+    }
+
+    const { products } = await UserModel.findById(userId).populate("products");
+    console.log(products);
+    if (!products) {
+      return res.status(400).json({ message: "Products not founded" });
+    }
+    return res.status(200).json({ message: products });
+  } catch (error) {
+    return res.status(400).json({ message: error });
   }
 };
 
@@ -81,7 +107,7 @@ export const createProduct = async (req, res, next) => {
     const { title, price, description, category, ownerId } = req.body;
     const user = await UserModel.findById(ownerId);
     console.log(req.body);
-    
+
     if (!req.files || !req.files.productImage) {
       return res.status(400).json({
         status: "error",
