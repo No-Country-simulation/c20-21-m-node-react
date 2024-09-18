@@ -3,6 +3,7 @@ import logoImage from "../../assets/logoImage.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const regex = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
@@ -138,6 +139,9 @@ function Register() {
           <button type="submit" className="register-button">
             Registrarse
           </button>
+          <Link to="/">
+            <button className="retornar-button">Return</button>
+          </Link>
         </form>
 
       </div>
