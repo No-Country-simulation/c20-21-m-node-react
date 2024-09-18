@@ -7,7 +7,6 @@ import {
   updateUser,
   deleteUser,
   loginUser,
-  addProduct
 } from "../controllers/user.controllers.js";
 import multer from "multer";
 
@@ -30,9 +29,6 @@ app.post("/register", createUser);
 
 // POST login user ✅
 app.post("/login", loginUser);
-
-// Asociar producto con el usuario, se agrega al array de products. ✅
-app.post("/:uid/product/:pid", addProduct);
 
 // UPDATE user by id. ✅
 app.put("/:id", updateUser);

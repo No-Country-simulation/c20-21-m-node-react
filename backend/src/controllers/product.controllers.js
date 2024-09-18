@@ -76,11 +76,10 @@ export const getProductById = async (req, res) => {
   }
 };
 
-export const createProduct = async (req, res, next) => {
+export const createProduct = async (req, res) => {
   try {
-    const { title, price, description, category, ownerId } = req.body;
-    const user = await UserModel.findById(ownerId);
-    console.log(req.body);
+    const { title, price, description, category } = req.body;
+    const { email, userId } = req.user
     
     if (!req.files || !req.files.productImage) {
       return res.status(400).json({
@@ -120,12 +119,17 @@ export const createProduct = async (req, res, next) => {
       description,
       productImage: req.body.productImage, //Guarda las imagenes con sus respectivas propiedades public_id y secure_url
       category,
-      // ownerId: user._id,
+      ownerId: userId,
     });
 
     const savedProduct = await product.save();
     // user.productsId = [...user.productsId, savedProduct._id];
     // await user.save();
+
+    await addProduct({
+      userId: userId,
+      productId: product._id
+    })
 
     res.status(201).json({
       status: "success",
@@ -133,7 +137,11 @@ export const createProduct = async (req, res, next) => {
       data: product,
     });
   } catch (error) {
-    next(error);
+    res.status(400).json({
+      status: "error",
+      message: "Error al intentar crear el producto",
+      error: error,
+    });
   }
 };
 
@@ -236,5 +244,38 @@ export const deleteProductById = async (req, res, next) => {
       message: "Error al intentar borrar el producto",
       error: error,
     });
+  }
+};
+
+// Asociar producto con el usuario, se agrega al array de products. ✅
+export const addProduct = async ({userId, productId}) => {
+
+  console.log(userId, productId)
+  try {
+
+    // Verificar si el id del User existe.
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return console.log("EL usuario no existe")
+    }
+
+    // Verificar si el pid ya está en el array products del User
+    const productExists = user.products.some(product => product._id.toString() === productId);
+    if (productExists) {
+      return console.log("El producto ya está asociado con este usuario.")
+    }
+
+    // Guardar el id en el array products del User.
+    user.products.push({
+      _id: productId
+    });
+
+    // Guardar cambios.
+    await user.save();
+
+    console.log("El guardado del usuario fué exitoso.")
+
+  } catch (error) {
+    console.log("Error al intentar agregar un producto: ", error)
   }
 };
