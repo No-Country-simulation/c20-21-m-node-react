@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import "./Detail.styles.css";
 import NavBar from "../../components/Navbar";
 import Carousel from "../../components/Carousel/Carousel.jsx";
-
+import { CartContext } from "../../context/CartContext"; 
 export const Detail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
+  const [imgIndex, setImgIndex] = useState(0)
 
-  //Prueba
+  const token = localStorage.getItem("token");
+  const isGuest = localStorage.getItem("guest");
+
+  const { addItemToCart } = useContext(CartContext); 
   const sellerId = "123456789";
 
   useEffect(() => {
@@ -31,6 +35,22 @@ export const Detail = () => {
     };
     fetchProduct();
   }, [id]);
+
+  const handleAddToCart = () => {
+    if (isGuest) {
+      alert("Debes registrarte para agregar productos al carrito.");
+      navigate("/register");
+    } else {
+      if (product) {
+        const productToAdd = {
+          ...product,
+          image: product.productImage[imgIndex].secure_url, 
+        };
+        addItemToCart(productToAdd);
+        alert("Producto agregado al carrito");
+      }
+    }
+  };
 
   const handleChat = () => {
     if (product && product.sellerId) {
@@ -56,7 +76,7 @@ export const Detail = () => {
         <p className="detail-price">Price: ${product.price}</p>
         <p className="detail-description">Description: {product.description}</p>
 
-        <Carousel>
+        <Carousel imgIndex={imgIndex} setImgIndex={setImgIndex}>
           {product.productImage && product.productImage.length > 0
             ? product.productImage.map((image, index) => (
                 <div className="detail-image-container" key={index}>
@@ -90,6 +110,10 @@ export const Detail = () => {
         ) : (
           <p>El vendedor no está disponible para chatear.</p>
         )}
+
+        <button className="add-to-cart-button" onClick={handleAddToCart}>
+          Agregar al Carrito
+        </button>
       </div>
     </>
   );
