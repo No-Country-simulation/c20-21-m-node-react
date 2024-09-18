@@ -22,8 +22,8 @@
 
 .detail-image-container {
     width: 100%;
-    max-width: 700px; /* Tamaño máximo del marco */
-    height: 600px; /* Altura fija */
+    max-width: 700px; 
+    height: 600px; 
     margin: 0 auto 20px;
     border: 2px solid #ddd;
     border-radius: 8px;

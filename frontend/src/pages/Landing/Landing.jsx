@@ -31,8 +31,9 @@ export const LandingPage = () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.removeItem("guest"); 
         navigate("/home");
-      } else {
+      }else {
         setError(data.message || "Correo o contraseña incorrectos");
       }
     } catch (error) {
@@ -42,6 +43,7 @@ export const LandingPage = () => {
 
   const handleGuestLogin = () => {
     localStorage.setItem("guest", true); 
+    localStorage.removeItem("token");
     navigate("/home");
   };
 
