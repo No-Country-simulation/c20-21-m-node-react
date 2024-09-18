@@ -9,22 +9,21 @@ import {
   getProductsByUser,
 } from "../controllers/product.controllers.js";
 import { uploadImages } from '../middlewares/cloudinary.middleware.js'
-import auth from "../middlewares/auth.js"
 
 const app = Router();
 
 // GET all products ✅
 app.get("/", getAllProducts);
 
+// POST create product ✅ TODO > add middleware: auth
+app.post("/", uploadImages, auth, createProduct);
+
 // GET user by id ✅
 app.get("/posts", auth, getProductsByUser);
 
 // GET product by id ✅ TODO > add middleware: auth
-app.get("/:productId", getProductById);
+app.get("/:productId", auth,  getProductById);
 
-
-// POST create product ✅ TODO > add middleware: auth
-app.post("/", uploadImages, auth, createProduct);
 
 // PUT update product by id ✅ TODO > add middleware: auth, owner
 app.put("/:productId",uploadImages, updateProductById);

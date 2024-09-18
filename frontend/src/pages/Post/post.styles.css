@@ -1,0 +1,59 @@
+.main-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 85%;
+  max-height: 90%;
+  width: 90em;
+  height: auto;
+  margin: 0 auto;
+}
+
+.post-card {
+  display: flex;
+  max-width: 100%;
+  width: 60em;
+  max-height: 20%;
+  height: 15rem;
+  border: 1px solid black;
+  border-radius: 10px;
+  gap: 15px;
+  margin: 10px auto;
+}
+
+.post-image-container {
+  width: 20%;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.post-image-container img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  object-fit: cover;
+  box-sizing: border-box;
+}
+
+.post-title {
+  font-size: 1.2em;
+  color: #000000;
+  text-decoration: underline;
+}

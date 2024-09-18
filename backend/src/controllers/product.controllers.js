@@ -53,38 +53,24 @@ export const getAllProducts = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   try {
-    const { userId } = req.user;
+    const { productId } = req.params; 
+    const product = await ProductModel.findById(productId); 
 
-    if (!userId) {
-      return res.status(400).json({
-        message: "Data userId not found",
-      });
+    if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado" });
     }
 
-    const user = await UserModel.findById(userId).populate("products"); // Asegúrate de usar .populate si products son ObjectIds de otro modelo
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const { products } = user;
-
-    if (!products || products.length === 0) {
-      return res.status(404).json({ message: "Products not found" });
-    }
-
-    return res.status(200).json({ products }); // Cambia 'message' a 'products'
+    return res.status(200).json(product); 
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ message: "Error retrieving products", error });
+    return res.status(500).json({ message: "Error retrieving product", error });
   }
 };
 
 export const getProductsByUser = async (req, res) => {
   try {
     const { userId } = req.user;
-    
+
     if (!userId) {
       return res.status(400).json({
         message: "Data userId not found",
@@ -92,11 +78,10 @@ export const getProductsByUser = async (req, res) => {
     }
 
     const { products } = await UserModel.findById(userId).populate("products");
-    console.log(products);
     if (!products) {
       return res.status(400).json({ message: "Products not founded" });
     }
-    return res.status(200).json({ message: products });
+    return res.status(200).json({ status: "success", payload: products });
   } catch (error) {
     return res.status(400).json({ message: error });
   }
@@ -105,8 +90,8 @@ export const getProductsByUser = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const { title, price, description, category } = req.body;
-    const { email, userId } = req.user
-    
+    const { email, userId } = req.user;
+
     if (!req.files || !req.files.productImage) {
       return res.status(400).json({
         status: "error",
@@ -154,8 +139,8 @@ export const createProduct = async (req, res) => {
 
     await addProduct({
       userId: userId,
-      productId: product._id
-    })
+      productId: product._id,
+    });
 
     res.status(201).json({
       status: "success",
@@ -274,34 +259,32 @@ export const deleteProductById = async (req, res, next) => {
 };
 
 // Asociar producto con el usuario, se agrega al array de products. ✅
-export const addProduct = async ({userId, productId}) => {
-
-  console.log(userId, productId)
+export const addProduct = async ({ userId, productId }) => {
   try {
-
     // Verificar si el id del User existe.
     const user = await UserModel.findById(userId);
     if (!user) {
-      return console.log("EL usuario no existe")
+      return console.log("EL usuario no existe");
     }
 
     // Verificar si el pid ya está en el array products del User
-    const productExists = user.products.some(product => product._id.toString() === productId);
+    const productExists = user.products.some(
+      (product) => product._id.toString() === productId
+    );
     if (productExists) {
-      return console.log("El producto ya está asociado con este usuario.")
+      return console.log("El producto ya está asociado con este usuario.");
     }
 
     // Guardar el id en el array products del User.
     user.products.push({
-      _id: productId
+      _id: productId,
     });
 
     // Guardar cambios.
     await user.save();
 
-    console.log("El guardado del usuario fué exitoso.")
-
+    console.log("El guardado del usuario fué exitoso.");
   } catch (error) {
-    console.log("Error al intentar agregar un producto: ", error)
+    console.log("Error al intentar agregar un producto: ", error);
   }
 };

@@ -1,7 +1,14 @@
 import jwt from "jsonwebtoken";
 
 const auth = (req, res, next) => {
-  const token = req.header("Authorization").replace("Bearer ", "");
+
+  const authHeader = req.header("Authorization");
+
+  // Verifica si el encabezado Authorization está presente
+  if (!authHeader) {
+    return res.status(401).send({ message: "Access denied. No token provided" });
+  }
+  const token = authHeader.replace("Bearer ", "");
   
   if (!token) {
     res.status(401).send({message: "Access denied. No token provided"})
