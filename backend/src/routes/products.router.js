@@ -9,6 +9,7 @@ import {
   getProductsByUser,
 } from "../controllers/product.controllers.js";
 import { uploadImages } from '../middlewares/cloudinary.middleware.js'
+import auth from "../middlewares/auth.js"
 
 const app = Router();
 
@@ -23,7 +24,7 @@ app.get("/:productId", getProductById);
 
 
 // POST create product ✅ TODO > add middleware: auth
-app.post("/", uploadImages, createProduct);
+app.post("/", uploadImages, auth, createProduct);
 
 // PUT update product by id ✅ TODO > add middleware: auth, owner
 app.put("/:productId",uploadImages, updateProductById);

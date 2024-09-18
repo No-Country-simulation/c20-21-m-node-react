@@ -5,8 +5,9 @@ import HomeLayout from '../layouts/HomeLayout';
 import Error404 from '../pages/Error/Error404';
 import { LandingPage } from '../pages/Landing/Landing';
 import CreateProduct from '../pages/Product/CreateProduct';
-import { Chat } from '../pages/Chat/Chat'; // Importar el componente Chat
+import { Chat } from '../pages/Chat/Chat';
 import Register from "../pages/Register/Register";
+import Cart from "../pages/Cart/Cart";
 
 const MyRoutes = () => {
     return (
@@ -25,6 +26,7 @@ const MyRoutes = () => {
                 <Route path="/product">
                     <Route path='create' element={<CreateProduct />} />
                 </Route>
+                <Route path="/cart" element={<Cart/>}/>
             </Routes>
         </>
     );

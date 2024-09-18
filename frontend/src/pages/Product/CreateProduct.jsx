@@ -48,9 +48,11 @@ function CreateProduct() {
     toast.error(error.message || 'An error occurred');
   };
 
+  const token = localStorage.getItem("token")
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log(token)
     const formData = new FormData();
     formData.append("title", title);
     formData.append("price", price);
@@ -60,11 +62,21 @@ function CreateProduct() {
 
     fetch(import.meta.env.VITE_URL_BACKEND + "/api/products", {
       method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      },
       body: formData,
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((error) => {
+            handleResponseError(error || 'An error occurred');
+          });
+        }
+        return response.json();
+      })
       .then((data) => handleResponseOk(data))
-      .catch((error) => handleResponseError(error));
+      .catch((error) => console.log(error));
   };
 
   const productImageData = () => {

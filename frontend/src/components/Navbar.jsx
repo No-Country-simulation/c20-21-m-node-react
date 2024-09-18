@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Box, InputBase, CssBaseline } from '@mui/material';
+import React, { useState, useEffect, useContext } from 'react';
+import { AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Box, InputBase, CssBaseline, Button } from '@mui/material';
 import { createTheme, ThemeProvider, styled, alpha } from '@mui/material/styles';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreIcon from '@mui/icons-material/MoreVert';
@@ -10,6 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../context/CartContext';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -41,6 +43,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
+    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -55,7 +58,29 @@ const NavBar = ({ onSearch }) => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [darkMode, setDarkMode] = useState(false);
-  const navigate = useNavigate(); 
+  const { cartItems } = useContext(CartContext); 
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
+  const totalItemsInCart = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const guest = localStorage.getItem("guest"); 
+
+    if (token) {
+      setIsAuthenticated(true);
+      setIsGuest(false); 
+    } else if (guest) {
+      setIsGuest(true); 
+    }
+  }, []);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setDarkMode(savedTheme === 'dark');
+      }
+    }, []);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -95,10 +120,13 @@ const NavBar = ({ onSearch }) => {
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+    localStorage.setItem('theme', darkMode ? 'light' : 'dark');
   };
 
   const handleLogout = () => {
-    navigate('/'); 
+    localStorage.removeItem("token");
+    localStorage.removeItem("guest");
+    navigate('/');
   };
 
   const menuId = 'primary-search-account-menu';
@@ -118,8 +146,8 @@ const NavBar = ({ onSearch }) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Mi cuenta</MenuItem>
       <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
     </Menu>
   );
@@ -143,11 +171,11 @@ const NavBar = ({ onSearch }) => {
     >
       <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
+          <Badge badgeContent={0} color="error">
             <MailIcon />
           </Badge>
         </IconButton>
-        <p>Messages</p>
+        <p>Mensajes</p>
       </MenuItem>
       <MenuItem>
         <IconButton
@@ -155,23 +183,36 @@ const NavBar = ({ onSearch }) => {
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
+          <Badge badgeContent={0} color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>
-        <p>Notifications</p>
+        <p>Notificaciones</p>
+      </MenuItem>
+      <MenuItem>
+        <IconButton
+          size="large"
+          aria-label="mostrar carrito"
+          color="inherit"
+          onClick={() => navigate('/cart')}
+        >
+          <Badge badgeContent={totalItemsInCart} color="error">
+            <ShoppingCartIcon />
+          </Badge>
+        </IconButton>
+        <p>Carrito</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
-          aria-label="account of current user"
+          aria-label="cuenta de usuario actual"
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
           color="inherit"
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p>Perfil</p>
       </MenuItem>
       <MenuItem onClick={handleLogout}>
         <IconButton size="large" aria-label="Cerrar Sesión" color="inherit">
@@ -193,7 +234,7 @@ const NavBar = ({ onSearch }) => {
               size="large"
               edge="start"
               color="inherit"
-              aria-label="open drawer"
+              aria-label="abrir menú"
               sx={{ mr: 2 }}
             >
               <MenuIcon />
@@ -202,7 +243,8 @@ const NavBar = ({ onSearch }) => {
               variant="h6"
               noWrap
               component="div"
-              sx={{ display: { xs: 'none', sm: 'block' } }}
+              sx={{ display: { xs: 'none', sm: 'block' }, cursor: 'pointer' }}
+              onClick={() => navigate('/home')}
             >
               PopMart
             </Typography>
@@ -212,7 +254,7 @@ const NavBar = ({ onSearch }) => {
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder="Search…"
+                placeholder="Buscar…"
                 inputProps={{ 'aria-label': 'search' }}
                 value={searchText}
                 onChange={handleSearchChange}
@@ -220,26 +262,46 @@ const NavBar = ({ onSearch }) => {
               />
             </Search>
 
+            {isAuthenticated ? (
+              <Button color="inherit" onClick={() => navigate('/product/create')}>
+                Crear Producto
+              </Button>
+            ):<Button disabled>
+                Crear Producto
+              </Button>
+            }
+
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                <Badge badgeContent={4} color="error">
+              <IconButton size="large" aria-label="mostrar mensajes" color="inherit">
+                <Badge badgeContent={0} color="error">
                   <MailIcon />
                 </Badge>
               </IconButton>
               <IconButton
                 size="large"
-                aria-label="show 17 new notifications"
+                aria-label="mostrar notificaciones"
                 color="inherit"
               >
-                <Badge badgeContent={17} color="error">
+                <Badge badgeContent={0} color="error">
                   <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              
+              <IconButton
+                size="large"
+                aria-label="mostrar carrito"
+                color="inherit"
+                onClick={() => navigate('/cart')}
+              >
+                <Badge badgeContent={totalItemsInCart} color="error">
+                  <ShoppingCartIcon />
                 </Badge>
               </IconButton>
               <IconButton
                 size="large"
                 edge="end"
-                aria-label="account of current user"
+                aria-label="cuenta de usuario actual"
                 aria-controls={menuId}
                 aria-haspopup="true"
                 onClick={handleProfileMenuOpen}
@@ -254,7 +316,7 @@ const NavBar = ({ onSearch }) => {
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"
-                aria-label="show more"
+                aria-label="mostrar más"
                 aria-controls={mobileMenuId}
                 aria-haspopup="true"
                 onClick={handleMobileMenuOpen}

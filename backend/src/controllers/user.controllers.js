@@ -187,53 +187,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// Asociar producto con el usuario, se agrega al array de products. ✅
-export const addProduct = async (req, res) => {
-  try {
-    const { uid, pid } = req.params
-
-    // Verificar si el id del User existe.
-    const user = await UserModel.findById(uid);
-    if (!user) {
-      return res.status(400).json({
-        status: "Error.",
-        message: "No existe un usuario con ese id.",
-        error: "No existe un usuario con ese id."
-      });
-    }
-
-    // Verificar si el pid ya está en el array products del User
-    const productExists = user.products.some(product => product._id.toString() === pid);
-    if (productExists) {
-      return res.status(400).json({
-        status: "Error.",
-        message: "El producto ya está asociado con este usuario.",
-        error: "El producto ya está asociado con este usuario."
-      });
-    }
-
-    // Guardar el id en el array products del User.
-    user.products.push({
-      _id: pid
-    });
-
-    // Guardar cambios.
-    await user.save();
-
-    res.status(201).json({
-      status: "Success.",
-      message: "Se ha asocciado un producto al user.",
-      data: user
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "Error.",
-      message: "Error al intentar agregar un producto.",
-      error: error.message,
-    });
-  }
-};
-
 // No son necesarios.
 
 // Delete user by id. ✅
