@@ -9,6 +9,7 @@ import { Chat } from '../pages/Chat/Chat';
 import Register from "../pages/Register/Register";
 import Cart from "../pages/Cart/Cart";
 import { Post } from "../pages/Post/Post";
+import EditPost from "../pages/EditPost/EdithPost";
 
 const MyRoutes = () => {
     return (
@@ -28,6 +29,9 @@ const MyRoutes = () => {
                     <Route path='create' element={<CreateProduct />} />
                 </Route>
                 <Route path="/post" element={<Post/>}/>
+                <Route path="/edit">
+                    <Route path=':id' element={<EditPost/>} />
+                </Route>
                 <Route path="/cart" element={<Cart/>}/>
             </Routes>
         </>

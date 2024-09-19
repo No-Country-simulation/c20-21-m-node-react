@@ -31,9 +31,9 @@ app.post("/register", createUser);
 app.post("/login", loginUser);
 
 // UPDATE user by id. ✅
-app.put("/:id", auth, updateUser);
+app.put("/:id", updateUser);
 
 // DELETE user by id. ✅
-app.delete("/:id", auth, deleteUser);
+app.delete("/:id", deleteUser);
 
 export default app;

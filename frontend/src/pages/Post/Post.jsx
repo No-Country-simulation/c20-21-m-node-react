@@ -84,12 +84,11 @@ export const Post = () => {
                   <Link to={`/home/${product._id}`}>
                     <FaEye className="icon" /> {/* Ícono de ojo */}
                   </Link>
-                  <Link to={`/product/${product._id}`}>
+                  <Link to={`/edit/${product._id}`}>
                     <FaPen className="icon" /> {/* Ícono de lápiz */}
                   </Link>
-                  <Link to={`/home/${product._id}`}>
                     <FaTimes className="icon" /> {/* Ícono de cruz */}
-                  </Link>
+              
                 </div>
               </div>
             ))

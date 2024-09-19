@@ -167,7 +167,7 @@ export const updateProductById = async (req, res) => {
         message: "Data userId not found",
       });
     }
-    
+
     const existingProduct = await ProductModel.findById(productId);
     if (!existingProduct) {
       return res.status(404).json({
@@ -181,7 +181,7 @@ export const updateProductById = async (req, res) => {
     //     await deleteImage(image.public_id);
     //   }
     // }
-    let uploadedImages = [];
+    let uploadedImages = existingProduct.productImage || [];
     if (req.files && req.files.productImage) {
       const images = Array.isArray(req.files.productImage)
         ? req.files.productImage
@@ -191,7 +191,10 @@ export const updateProductById = async (req, res) => {
         images.map(async (file) => {
           const result = await uploadImages(file.tempFilePath);
           await fs.unlink(file.tempFilePath);
-          return result;
+          return {
+            public_id: result.public_id,
+            secure_url: result.secure_url,
+          };
         })
       );
     }

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import auth from '../middlewares/auth.js'
+import auth from "../middlewares/auth.js";
 import {
   getAllProducts,
   getProductById,
@@ -8,7 +8,7 @@ import {
   deleteProductById,
   getProductsByUser,
 } from "../controllers/product.controllers.js";
-import { uploadImages } from '../middlewares/cloudinary.middleware.js'
+import { uploadImages } from "../middlewares/cloudinary.middleware.js";
 
 const app = Router();
 
@@ -22,11 +22,10 @@ app.post("/", uploadImages, auth, createProduct);
 app.get("/posts", auth, getProductsByUser);
 
 // GET product by id ✅ TODO > add middleware: auth
-app.get("/:productId", auth,  getProductById);
-
+app.get("/:productId", auth, getProductById);
 
 // PUT update product by id ✅ TODO > add middleware: auth, owner
-app.put("/:productId",uploadImages, updateProductById);
+app.put("/:productId", uploadImages, auth, updateProductById);
 
 // DELETE product by id ✅ TODO > add middleware: auth, owner | admin
 app.delete("/:productId", deleteProductById);
