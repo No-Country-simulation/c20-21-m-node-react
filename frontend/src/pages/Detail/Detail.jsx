@@ -1,26 +1,36 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import "./Detail.styles.css";
 import NavBar from "../../components/Navbar";
 import Carousel from "../../components/Carousel/Carousel.jsx";
-import { CartContext } from "../../context/CartContext"; 
+import { CartContext } from "../../context/CartContext";
 export const Detail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
-  const [imgIndex, setImgIndex] = useState(0)
+  const [imgIndex, setImgIndex] = useState(0);
 
   const token = localStorage.getItem("token");
   const isGuest = localStorage.getItem("guest");
 
-  const { addItemToCart } = useContext(CartContext); 
+  const { addItemToCart } = useContext(CartContext);
   const sellerId = "123456789";
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const response = await fetch(
+          import.meta.env.VITE_URL_BACKEND + `/api/products/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || "Error fetching product");
@@ -34,7 +44,7 @@ export const Detail = () => {
       }
     };
     fetchProduct();
-  }, [id]);
+  }, [id, token]);
 
   const handleAddToCart = () => {
     if (isGuest) {
@@ -44,7 +54,7 @@ export const Detail = () => {
       if (product) {
         const productToAdd = {
           ...product,
-          image: product.productImage[imgIndex].secure_url, 
+          image: product.productImage[imgIndex].secure_url,
         };
         addItemToCart(productToAdd);
         alert("Producto agregado al carrito");
@@ -77,25 +87,25 @@ export const Detail = () => {
         <p className="detail-description">Description: {product.description}</p>
 
         <Carousel imgIndex={imgIndex} setImgIndex={setImgIndex}>
-          {product.productImage && product.productImage.length > 0
-            ? product.productImage.map((image, index) => (
-                <div className="detail-image-container" key={index}>
-                  <img
-                    className="detail-image"
-                    src={image.secure_url}
-                    alt={product.title}
-                  />
-                </div>
-              ))
-            : (
-              <div className="detail-image-container">
+          {product.productImage && product.productImage.length > 0 ? (
+            product.productImage.map((image, index) => (
+              <div className="detail-image-container" key={index}>
                 <img
                   className="detail-image"
-                  src="https://via.placeholder.com/150"
-                  alt="Placeholder"
+                  src={image.secure_url}
+                  alt={product.title}
                 />
               </div>
-            )}
+            ))
+          ) : (
+            <div className="detail-image-container">
+              <img
+                className="detail-image"
+                src="https://via.placeholder.com/150"
+                alt="Placeholder"
+              />
+            </div>
+          )}
         </Carousel>
 
         <p>Category: {product.category}</p>

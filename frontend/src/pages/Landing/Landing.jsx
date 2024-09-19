@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./landing.styles.css";
 import logoImage from "../../assets/logoImage.svg";
 import { useNavigate } from "react-router-dom";
@@ -19,30 +19,36 @@ export const LandingPage = () => {
     };
 
     try {
-      const response = await fetch(import.meta.env.VITE_URL_BACKEND + "/api/users/login", {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        import.meta.env.VITE_URL_BACKEND + "/api/users/login",
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        localStorage.removeItem("guest"); 
+        localStorage.removeItem("guest");
         navigate("/home");
-      }else {
+      } else {
         setError(data.message || "Correo o contraseña incorrectos");
       }
     } catch (error) {
-      setError("Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.");
+      setError(
+        "Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde. Error: ",
+        error
+      );
     }
   };
 
   const handleGuestLogin = () => {
-    localStorage.setItem("guest", true); 
+    localStorage.setItem("guest", true);
     localStorage.removeItem("token");
     navigate("/home");
   };

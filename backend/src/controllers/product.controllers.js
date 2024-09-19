@@ -1,6 +1,6 @@
 import { ProductModel } from "../models/product.model.js";
 import { UserModel } from "../models/user.model.js";
-import { uploadImages} from "../utils/cloudinary.util.js";
+import { uploadImages, deleteImage } from "../utils/cloudinary.util.js";
 import fs from "fs-extra";
 
 export const getAllProducts = async (req, res) => {
@@ -54,33 +54,44 @@ export const getAllProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const { productId } = req.params;
-    const product = await ProductModel.findOne({
-      _id: productId,
-    });
+    const product = await ProductModel.findById(productId);
 
     if (!product) {
-      return res.status(404).json({
-        status: "error",
-        message: "No se encontró el producto",
-        error: error,
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    return res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error retrieving product", error });
+  }
+};
+
+export const getProductsByUser = async (req, res) => {
+  try {
+    const { userId } = req.user;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
       });
     }
 
-    res.status(200).json(product);
+    const { products } = await UserModel.findById(userId).populate("products");
+    if (!products) {
+      return res.status(400).json({ message: "Products not founded" });
+    }
+    return res.status(200).json({ status: "success", payload: products });
   } catch (error) {
-    res.status(400).json({
-      status: "error",
-      message: "Error al buscar el producto",
-      error: error,
-    });
+    return res.status(400).json({ message: error });
   }
 };
 
 export const createProduct = async (req, res) => {
   try {
     const { title, price, description, category } = req.body;
-    const { email, userId } = req.user
-    
+    const { email, userId } = req.user;
+
     if (!req.files || !req.files.productImage) {
       return res.status(400).json({
         status: "error",
@@ -128,8 +139,8 @@ export const createProduct = async (req, res) => {
 
     await addProduct({
       userId: userId,
-      productId: product._id
-    })
+      productId: product._id,
+    });
 
     res.status(201).json({
       status: "success",
@@ -149,6 +160,13 @@ export const updateProductById = async (req, res) => {
   try {
     const { productId } = req.params;
     const { title, price, description, category } = req.body;
+    const { userId } = req.user;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
+      });
+    }
 
     const existingProduct = await ProductModel.findById(productId);
     if (!existingProduct) {
@@ -163,7 +181,7 @@ export const updateProductById = async (req, res) => {
     //     await deleteImage(image.public_id);
     //   }
     // }
-    let uploadedImages = [];
+    let uploadedImages = existingProduct.productImage || [];
     if (req.files && req.files.productImage) {
       const images = Array.isArray(req.files.productImage)
         ? req.files.productImage
@@ -173,7 +191,10 @@ export const updateProductById = async (req, res) => {
         images.map(async (file) => {
           const result = await uploadImages(file.tempFilePath);
           await fs.unlink(file.tempFilePath);
-          return result;
+          return {
+            public_id: result.public_id,
+            secure_url: result.secure_url,
+          };
         })
       );
     }
@@ -216,11 +237,17 @@ export const updateProductById = async (req, res) => {
 
 export const deleteProductById = async (req, res, next) => {
   try {
+    const { userId } = req.user;
     const { productId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
+      });
+    }
     const deletedProduct = await ProductModel.findOneAndDelete({
       _id: productId,
     });
-
     if (!deletedProduct) {
       return res.json({
         status: "error",
@@ -248,34 +275,32 @@ export const deleteProductById = async (req, res, next) => {
 };
 
 // Asociar producto con el usuario, se agrega al array de products. ✅
-export const addProduct = async ({userId, productId}) => {
-
-  console.log(userId, productId)
+export const addProduct = async ({ userId, productId }) => {
   try {
-
     // Verificar si el id del User existe.
     const user = await UserModel.findById(userId);
     if (!user) {
-      return console.log("EL usuario no existe")
+      return console.log("EL usuario no existe");
     }
 
     // Verificar si el pid ya está en el array products del User
-    const productExists = user.products.some(product => product._id.toString() === productId);
+    const productExists = user.products.some(
+      (product) => product._id.toString() === productId
+    );
     if (productExists) {
-      return console.log("El producto ya está asociado con este usuario.")
+      return console.log("El producto ya está asociado con este usuario.");
     }
 
     // Guardar el id en el array products del User.
     user.products.push({
-      _id: productId
+      _id: productId,
     });
 
     // Guardar cambios.
     await user.save();
 
-    console.log("El guardado del usuario fué exitoso.")
-
+    console.log("El guardado del usuario fué exitoso.");
   } catch (error) {
-    console.log("Error al intentar agregar un producto: ", error)
+    console.log("Error al intentar agregar un producto: ", error);
   }
 };
