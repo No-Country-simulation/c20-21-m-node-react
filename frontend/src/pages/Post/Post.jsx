@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import "./post.styles.css";
+import { FaEye, FaPen, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 export const Post = () => {
@@ -47,6 +48,18 @@ export const Post = () => {
     }
   }, []);
 
+  //Función para preformatear la hora devuelta por mongo
+  const formatDateAndTime = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes en dos dígitos
+    const day = String(date.getDate()).padStart(2, '0'); // Día en dos dígitos
+    const hours = String(date.getHours()).padStart(2, '0'); // Horas en dos dígitos
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // Minutos en dos dígitos
+
+    return `${year}/${month}/${day} - ${hours}:${minutes}`;
+}
+
   return (
     <div>
       <NavBar />
@@ -55,14 +68,29 @@ export const Post = () => {
           {error ? ( // Mostrar el error en caso de que ocurra
             <p>Error: {error}</p>
           ) : isAuthenticated && products.length > 0 ? (
+            //recorre todos los productos creados por quien inició sesión
             products.map((product) => (
               <div key={product._id} className="post-card">
                 <div className="post-image-container">
                   <img src={product.productImage[0].secure_url} alt="image" />
                 </div>
-                <Link to={`/home/${product._id}`}>
+                <div className="title-container">
+                  <Link to={`/home/${product._id}`}>
                     <p className="post-title">{product.title}</p>
-                </Link>
+                  </Link>
+                  <label>{formatDateAndTime(product.createdAt)}</label>
+                </div>
+                <div className="icons-container">
+                  <Link to={`/home/${product._id}`}>
+                    <FaEye className="icon" /> {/* Ícono de ojo */}
+                  </Link>
+                  <Link to={`/product/${product._id}`}>
+                    <FaPen className="icon" /> {/* Ícono de lápiz */}
+                  </Link>
+                  <Link to={`/home/${product._id}`}>
+                    <FaTimes className="icon" /> {/* Ícono de cruz */}
+                  </Link>
+                </div>
               </div>
             ))
           ) : (
