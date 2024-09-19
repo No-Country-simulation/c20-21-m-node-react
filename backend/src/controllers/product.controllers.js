@@ -1,6 +1,6 @@
 import { ProductModel } from "../models/product.model.js";
 import { UserModel } from "../models/user.model.js";
-import { uploadImages } from "../utils/cloudinary.util.js";
+import { uploadImages, deleteImage } from "../utils/cloudinary.util.js";
 import fs from "fs-extra";
 
 export const getAllProducts = async (req, res) => {
@@ -237,11 +237,17 @@ export const updateProductById = async (req, res) => {
 
 export const deleteProductById = async (req, res, next) => {
   try {
+    const { userId } = req.user;
     const { productId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
+      });
+    }
     const deletedProduct = await ProductModel.findOneAndDelete({
       _id: productId,
     });
-
     if (!deletedProduct) {
       return res.json({
         status: "error",

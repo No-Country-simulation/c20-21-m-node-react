@@ -28,6 +28,6 @@ app.get("/:productId", auth, getProductById);
 app.put("/:productId", uploadImages, auth, updateProductById);
 
 // DELETE product by id ✅ TODO > add middleware: auth, owner | admin
-app.delete("/:productId", deleteProductById);
+app.delete("/:productId", auth, deleteProductById);
 
 export default app;
