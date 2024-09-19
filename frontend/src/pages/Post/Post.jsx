@@ -48,6 +48,30 @@ export const Post = () => {
     }
   }, []);
 
+  const handleDelete = async (productId) => {
+    const token = localStorage.getItem("token");
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/api/products/${productId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error deleting product: ${response.status}`);
+        }
+
+        // Filter out the deleted product from the state
+        setProducts(products.filter(product => product._id !== productId));
+      } catch (error) {
+        setError(error.message);
+      }
+    }
+  };
+
   //Función para preformatear la hora devuelta por mongo
   const formatDateAndTime = (dateString) => {
     const date = new Date(dateString);
@@ -87,7 +111,7 @@ export const Post = () => {
                   <Link to={`/edit/${product._id}`}>
                     <FaPen className="icon" /> {/* Ícono de lápiz */}
                   </Link>
-                    <FaTimes className="icon" /> {/* Ícono de cruz */}
+                    <FaTimes className="icon delete" onClick={() => handleDelete(product._id)}/> {/* Ícono de cruz */}
               
                 </div>
               </div>
