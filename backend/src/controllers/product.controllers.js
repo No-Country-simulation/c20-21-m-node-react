@@ -275,7 +275,7 @@ export const deleteProductById = async (req, res, next) => {
 };
 
 // Asociar producto con el usuario, se agrega al array de products. ✅
-export const addProduct = async ({ userId, productId }) => {
+const addProduct = async ({ userId, productId }) => {
   try {
     // Verificar si el id del User existe.
     const user = await UserModel.findById(userId);

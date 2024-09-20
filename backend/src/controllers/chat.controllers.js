@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { ChatModel } from "../models/chat.model.js";
-// const users = require("../models/user.model.js");
+import { UserModel } from "../models/user.model.js";
 
 // Trae todos los chats.
 export const getAllChats = async (req, res) => {
@@ -70,7 +70,11 @@ export const createNewChat = async (req, res) => {
       message: []
     });
 
+    // Guardar chat
     const savedChat = await newChat.save();
+    // Vincular al chat con user.
+    await addChat(userId, savedChat._id);
+
 
     res.status(200).json({
       status: "success",
@@ -82,6 +86,8 @@ export const createNewChat = async (req, res) => {
       message: `Error al crear el chat: ${error.message}`,
     });
   }
+
+
 };
 
 // Agregar mensajes en un chat.
@@ -158,5 +164,36 @@ export const deleteChat = async (req, res) => {
       status: "Error",
       message: error
     });
+  }
+};
+
+// Agrega un chat a un User, lo vincula.
+const addChat = async (userId, chatId) => {
+  try {
+    // Verificar si el id del User existe.
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return console.log("EL usuario no existe");
+    }
+
+    // Verificar si el pid ya está en el array products del User
+    const chatExists = user.products.some(
+      (product) => product._id.toString() === chatId
+    );
+    if (chatExists) {
+      return console.log("El chat ya está asociado con este usuario.");
+    }
+
+    // Guardar el id en el array products del User.
+    user.chats.push({
+      _id: chatId,
+    });
+
+    // Guardar cambios.
+    await user.save();
+
+    console.log("El chat fue guardado en el usuario exitosamente.");
+  } catch (error) {
+    console.log("Error al intentar agregar un id de chat al usermodel (chats): ", error);
   }
 };
