@@ -74,7 +74,7 @@ export const createNewChat = async (req, res) => {
     const savedChat = await newChat.save();
     // Vincular al chat con user.
     await addChat(userId, savedChat._id);
-
+    await addChat(ownerId, savedChat._id);
 
     res.status(200).json({
       status: "success",
