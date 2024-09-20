@@ -63,7 +63,7 @@ export const getProductById = async (req, res) => {
       ? await findChatByUsers(req.user.userId, product.ownerId)
       : {};
     
-    return res.status(200).json({ ...product, chatId: chat._id });
+    return res.status(200).json({ ...product, chatId: chat?._id });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error retrieving product", error });
