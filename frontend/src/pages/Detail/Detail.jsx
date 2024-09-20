@@ -15,13 +15,13 @@ export const Detail = () => {
   const isGuest = localStorage.getItem("guest");
 
   const { addItemToCart } = useContext(CartContext);
-  const sellerId = "123456789";
+  // const sellerId = "123456789";
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          import.meta.env.VITE_URL_BACKEND + `/api/products/${id}`,
+          `${import.meta.env.VITE_URL_BACKEND}/api/products/${id}`,
           {
             method: "GET",
             headers: {
@@ -30,14 +30,15 @@ export const Detail = () => {
             },
           }
         );
-
+    
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || "Error fetching product");
         }
         const data = await response.json();
-
-        setProduct({ ...data, sellerId: sellerId });
+    
+        // Usa el ownerId del producto
+        setProduct({ ...data, sellerId: data.ownerId }); // Asegúrate de que ownerId esté en los datos del producto
       } catch (error) {
         console.error("Error fetching product:", error);
         setError(error.message);
@@ -48,7 +49,7 @@ export const Detail = () => {
 
   const handleAddToCart = () => {
     if (isGuest) {
-      alert("Debes registrarte para agregar productos al carrito.");
+      alert("Debes registrarte para agregar productos a favoritos.");
       navigate("/register");
     } else {
       if (product) {
@@ -57,14 +58,14 @@ export const Detail = () => {
           image: product.productImage[imgIndex].secure_url,
         };
         addItemToCart(productToAdd);
-        alert("Producto agregado al carrito");
+        alert("Producto agregado a favoritos");
       }
     }
   };
 
   const handleChat = () => {
-    if (product && product.sellerId) {
-      navigate(`/chat/${product.sellerId}`);
+    if (product && product.ownerId) {
+      navigate(`/chat/${product.ownerId}`);
     } else {
       alert("No se puede iniciar el chat. El vendedor no está disponible.");
     }
@@ -122,7 +123,7 @@ export const Detail = () => {
         )}
 
         <button className="add-to-cart-button" onClick={handleAddToCart}>
-          Agregar al Carrito
+          Agregar a Favoritos
         </button>
       </div>
     </>

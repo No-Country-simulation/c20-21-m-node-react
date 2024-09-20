@@ -4,59 +4,95 @@ import logoImage from "../../assets/logoImage.svg";
 import "./Chat.styles.css"; 
 
 export const Chat = () => {
-  const { sellerId } = useParams();
+  const { sellerId } = useParams(); 
+  const userId = localStorage.getItem("userId"); 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [product, setProduct] = useState(null);
+  const [chatId, setChatId] = useState(null); 
+  const [chats, setChats] = useState([]); 
 
+  
   useEffect(() => {
-    
-    const fetchProduct = async () => {
+    const loadChats = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${sellerId}`);
-        if (!response.ok) throw new Error('Error al obtener el producto');
+        const response = await fetch(`http://localhost:5000/api/chats`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, 
+          },
+        });
+
+        if (!response.ok) throw new Error("Error al cargar los chats");
         const data = await response.json();
-        setProduct(data);
+        console.log("Chats", data);
+        
+        setChats(data.chats); 
       } catch (error) {
-        console.error(error);
+        console.error("Error al cargar los chats:", error);
       }
     };
-    fetchProduct();
-    
-    
-    setMessages([
-      { sender: "Comprador", content: "Hola, ¿este producto está disponible?" },
-      { sender: "Vendedor", content: "Sí, aún está disponible." },
-    ]);
-  }, [sellerId]);
 
-  const handleSendMessage = () => {
-    const newMsg = { sender: "Comprador", content: newMessage };
-    setMessages([...messages, newMsg]);
-    setNewMessage(""); 
+    loadChats();
+  }, []); 
+
+  
+  useEffect(() => {
+    const loadChatMessages = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/chats/${chatId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, 
+          },
+        });
+  
+        if (!response.ok) throw new Error("Error al cargar los mensajes del chat");
+        const chatData = await response.json();
+        setMessages(chatData.chat.messages || []); 
+      } catch (error) {
+        console.error("Error al cargar los mensajes:", error);
+      }
+    };
+  
+    if (chatId) {
+      loadChatMessages();
+    }
+  }, [chatId]);
+
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return; 
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/chats/${chatId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ contenido: newMessage }),
+      });
+
+      if (!response.ok) throw new Error("Error al enviar el mensaje");
+      const updatedChat = await response.json();
+      setMessages(updatedChat.message.messages); 
+      setNewMessage(""); 
+    } catch (error) {
+      console.error("Error enviando mensaje:", error);
+    }
   };
 
   return (
     <div className="chat-container">
       <div className="chat-header">
-      <div className="popmart-logo-container">
+        <div className="popmart-logo-container">
           <img src={logoImage} alt="PopMart logo" className="chat-logo" />
         </div>
-        
-         {/* Tratando de hacer que tome la foto del producto para que este presente en el chat */}
-        {/* {product && (
-          <>
-            <img src={product.productImage[0]?.secure_url || "https://via.placeholder.com/50"} 
-                 alt={product.title} className="chat-image" />
-            <h2>{product.title}</h2>
-          </>
-        )} */}
       </div>
 
       <div className="chat-messages">
-        {messages.map((msg, index) => (
-          <p key={index}>
-            <strong>{msg.sender}:</strong> {msg.content}
+        {messages.map((msg) => (
+          <p key={msg._id}>
+            <strong>{msg.emisor === userId ? "Tú" : "Comprador"}:</strong> {msg.contenido}
           </p>
         ))}
       </div>
@@ -72,11 +108,21 @@ export const Chat = () => {
         <button onClick={handleSendMessage} className="send-button">Enviar</button>
       </div>
 
-      <Link to="/home/"> 
-        <button className="return-button">
-            Volver al Home
-        </button>  
+      <Link to="/home/">
+        <button className="return-button">Volver al Home</button>
       </Link>
+
+      {/* Opcional: Mostrar los chats disponibles */}
+      <div className="available-chats">
+        <h3>Chats Disponibles:</h3>
+        {chats.map((chat) => (
+          <div key={chat._id}>
+            <Link to={`/chat/${chat.ownerId}`}>
+              <p>{chat.ownerName}</p>
+            </Link>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -19,8 +19,9 @@ import {
   alpha,
 } from "@mui/material/styles";
 import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
+// import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
@@ -209,10 +210,10 @@ const NavBar = ({ onSearch }) => {
           color="inherit"
         >
           <Badge badgeContent={0} color="error">
-            <NotificationsIcon />
+            {/* <NotificationsIcon /> */}
           </Badge>
         </IconButton>
-        <p>Notificaciones</p>
+        {/* <p>Notificaciones</p> */}
       </MenuItem>
       <MenuItem>
         <IconButton
@@ -222,7 +223,7 @@ const NavBar = ({ onSearch }) => {
           onClick={() => navigate("/cart")}
         >
           <Badge badgeContent={totalItemsInCart} color="error">
-            <ShoppingCartIcon />
+            <FavoriteIcon/>
           </Badge>
         </IconButton>
         <p>Carrito</p>
@@ -267,7 +268,7 @@ const NavBar = ({ onSearch }) => {
         <AppBar position="static">
           {/* <AppBar position="static" sx={{ bgcolor: 'primary.main' }}> Esto es para manteren el color azul de la barra */}
           <Toolbar>
-            <IconButton
+            {/* <IconButton
               size="large"
               edge="start"
               color="inherit"
@@ -275,7 +276,7 @@ const NavBar = ({ onSearch }) => {
               sx={{ mr: 2 }}
             >
               <MenuIcon />
-            </IconButton>
+            </IconButton> */}
             <Typography
               variant="h6"
               noWrap
@@ -327,7 +328,7 @@ const NavBar = ({ onSearch }) => {
                 color="inherit"
               >
                 <Badge badgeContent={0} color="error">
-                  <NotificationsIcon />
+                  {/* <NotificationsIcon /> */}
                 </Badge>
               </IconButton>
 
@@ -338,7 +339,7 @@ const NavBar = ({ onSearch }) => {
                 onClick={() => navigate("/cart")}
               >
                 <Badge badgeContent={totalItemsInCart} color="error">
-                  <ShoppingCartIcon />
+                  <FavoriteIcon/>
                 </Badge>
               </IconButton>
               <IconButton
