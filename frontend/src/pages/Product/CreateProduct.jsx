@@ -2,7 +2,6 @@ import { useState } from "react";
 import "./createproduct.style.css";
 import toast from "react-hot-toast";
 import Card from "../../components/card/card";
-import logoImage from "../../assets/logoImage.svg";
 import { Link } from "react-router-dom";
 import NavBar from "../../components/Navbar";
 
@@ -13,16 +12,13 @@ function CreateProduct() {
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
   const [imageBlob, setImageBlob] = useState("");
-  const [response, setResponse] = useState();
 
   const handleImage = (e) => {
     setImage(e.target.files[0]);
-    console.log(e.target.files[0]);
 
     if (e.target.files[0]) {
       const urlBlob = URL.createObjectURL(e.target.files[0]);
       setImageBlob(urlBlob);
-      console.log(urlBlob);
     }
   };
 
@@ -37,8 +33,6 @@ function CreateProduct() {
   };
 
   const handleResponseOk = (data) => {
-    setResponse(data);
-    console.log(data);
     toast.success(data.message || 'Product created successfully');
     resetAllFields();
   };
@@ -52,7 +46,6 @@ function CreateProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(token)
     const formData = new FormData();
     formData.append("title", title);
     formData.append("price", price);

@@ -61,10 +61,8 @@ export const LandingPage = () => {
     <div className="login-page">
       <div className="login-container">
         <img src={logoImage} alt="Logo" className="login-logo" />
-        <h1 className="login-title">POPMART</h1>
-        <p className="login-description">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </p>
+        <h1 className="login-title">Inicio de Sesión</h1>
+        
 
         <form className="login-form" onSubmit={handleLogin}>
           <input

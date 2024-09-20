@@ -36,7 +36,7 @@ export const Detail = () => {
           throw new Error(errorData.message || "Error fetching product");
         }
         const data = await response.json();
-    
+        
         // Usa el ownerId del producto
         setProduct({ ...data, sellerId: data.ownerId }); // Asegúrate de que ownerId esté en los datos del producto
       } catch (error) {
@@ -65,7 +65,7 @@ export const Detail = () => {
 
   const handleChat = () => {
     if (product && product.ownerId) {
-      navigate(`/chat/${product.ownerId}`);
+      navigate(`/chat/${product.chatId}`);
     } else {
       alert("No se puede iniciar el chat. El vendedor no está disponible.");
     }
