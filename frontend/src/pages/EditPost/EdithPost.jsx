@@ -34,7 +34,6 @@ function EditPost() {
           throw new Error(errorData.message || "Error fetching product");
         }
         const data = await response.json();
-        console.log(data);
 
         setTitle(data.title);
         setPrice(data.price);
@@ -62,7 +61,6 @@ function EditPost() {
   };
 
   const handleResponseOk = (data) => {
-    console.log(data);
     toast.success(data.message || "Product updated successfully");
   };
 

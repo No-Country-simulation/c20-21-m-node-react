@@ -20,8 +20,7 @@ const auth = (req, res, next) => {
 
     next()
   } catch(error) {
-    console.log("Error tying to verify", error)
-    res.status(400).send({message: "Invalid token"})
+    res.status(400).send({message: "Invalid token ", error})
   }
   
 }

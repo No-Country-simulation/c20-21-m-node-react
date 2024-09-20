@@ -5,20 +5,20 @@ import { UserModel } from "../models/user.model.js";
 // Trae todos los chats.
 export const getAllChats = async (req, res) => {
   try {
-    const chats = await ChatModel.find({})
+    const chats = await ChatModel.find({});
     /*.populate({
       path: "mensajes.emisor",
       select: "name",
     });
     */
     res.status(200).json({
-      chats: chats
+      chats: chats,
     });
   } catch (error) {
     res.status(400).json({
       status: "Error.",
       message: "Error al traer los chats.",
-      Error: error
+      Error: error,
     });
   }
 };
@@ -32,21 +32,30 @@ export const getChatById = async (req, res) => {
     if (!chat) {
       return res.status(404).json({
         status: "Error.",
-        message: "ID no encontrado."
+        message: "ID no encontrado.",
       });
     }
 
     res.status(200).json({
-      chat: chat
+      chat: chat,
     });
   } catch (error) {
     res.status(500).json({
       status: "Error.",
       message: "Error al traer los chats.",
-      Error: error
+      Error: error,
     });
   }
+};
 
+export const findChatByUsers = async (userId, productOwnerId) => {
+  try {
+    return await ChatModel.findOne({
+      users: { $all: [userId, productOwnerId] },
+    }).lean();
+  } catch (error) {
+    throw error;
+  }
 };
 
 //   Crear un chat.
@@ -64,10 +73,9 @@ export const createNewChat = async (req, res) => {
       return res.status(400).json({ error: "Integrantes inválidos." });
     }
 
-
     const newChat = new ChatModel({
       users,
-      message: []
+      message: [],
     });
 
     // Guardar chat
@@ -86,8 +94,6 @@ export const createNewChat = async (req, res) => {
       message: `Error al crear el chat: ${error.message}`,
     });
   }
-
-
 };
 
 // Agregar mensajes en un chat.
@@ -101,7 +107,8 @@ export const addMessages = async (req, res) => {
     if (!id || !contenido || !userId) {
       return res.status(400).json({
         status: "error",
-        message: "ID del chat, contenido del mensaje o ID del usuario faltantes."
+        message:
+          "ID del chat, contenido del mensaje o ID del usuario faltantes.",
       });
     }
 
@@ -112,15 +119,15 @@ export const addMessages = async (req, res) => {
     if (!chat) {
       return res.status(404).json({
         status: "error",
-        message: "Chat no encontrado."
+        message: "Chat no encontrado.",
       });
     }
 
     //  Crear el mensaje.
     const newMessage = {
       emisor: userId,
-      contenido: contenido
-    }
+      contenido: contenido,
+    };
 
     // Pushear el mensaje.
     chat.messages = [...chat.messages, newMessage];
@@ -129,9 +136,8 @@ export const addMessages = async (req, res) => {
     const savedMessage = await chat.save();
 
     res.status(200).json({
-      message: savedMessage
+      message: savedMessage,
     });
-
   } catch (error) {
     res.status(500).json({
       status: "error",
@@ -157,12 +163,12 @@ export const deleteChat = async (req, res) => {
     res.status(200).json({
       status: "Success,",
       message: "Se ha eliminado el chat correctamente.",
-      datas: chat
+      datas: chat,
     });
   } catch (error) {
     res.status(500).json({
       status: "Error",
-      message: error
+      message: error,
     });
   }
 };
@@ -192,8 +198,10 @@ const addChat = async (userId, chatId) => {
     // Guardar cambios.
     await user.save();
 
-    console.log("El chat fue guardado en el usuario exitosamente.");
   } catch (error) {
-    console.log("Error al intentar agregar un id de chat al usermodel (chats): ", error);
+    console.log(
+      "Error al intentar agregar un id de chat al usermodel (chats): ",
+      error
+    );
   }
 };

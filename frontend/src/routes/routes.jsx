@@ -20,7 +20,7 @@ const MyRoutes = () => {
                     <Route path=":id" element={<Detail />} />
                 </Route>
                 
-                <Route path="/chat/:sellerId" element={<Chat />} />
+                <Route path="/chat/:chatId" element={<Chat />} />
                 
                 <Route path="*" element={<Error404 />} />
                 <Route path="" element={<LandingPage />} />
