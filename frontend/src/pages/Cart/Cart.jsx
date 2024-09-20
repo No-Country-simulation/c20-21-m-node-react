@@ -17,19 +17,19 @@ export const Cart = () => {
     calculateTotal();
   }, [cartItems]);
 
-  const handleCheckout = () => {
-    alert("Procediendo al pago...");
-    clearCart();
-    navigate('/home');
-  };
+  // const handleCheckout = () => {
+  //   alert("Procediendo al pago...");
+  //   clearCart();
+  //   navigate('/home');
+  // };
 
   if (cartItems.length === 0) {
     return (
       <>
         <NavBar />
         <div className="cart-empty">
-          <h2>Tu carrito está vacío</h2>
-          <Link to="/home">Ir a comprar</Link>
+          <h2>Tu Favoritos está vacío</h2>
+          <Link to="/home">Encuentra tus Favoritos</Link>
         </div>
       </>
     );
@@ -39,7 +39,7 @@ export const Cart = () => {
     <>
       <NavBar />
       <div className="cart-container">
-        <h1>Tu Carrito</h1>
+        <h1>Tus Favoritos</h1>
         <table className="cart-table">
           <thead>
             <tr>
@@ -77,8 +77,8 @@ export const Cart = () => {
 
         <div className="cart-summary">
           <h2>Total: ${total.toFixed(2)}</h2>
-          <button onClick={clearCart}>Vaciar Carrito</button>
-          <button onClick={handleCheckout}>Comprar</button>
+          <button onClick={clearCart}>Limpiar Favoritos</button>
+          {/* <button onClick={handleCheckout}>Comprar</button> */}
         </div>
       </div>
     </>

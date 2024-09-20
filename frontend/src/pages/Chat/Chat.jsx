@@ -9,32 +9,55 @@ export const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [chatId, setChatId] = useState(null); 
+  const [chats, setChats] = useState([]); 
 
+  
   useEffect(() => {
-   
-    const loadOrCreateChat = async () => {
+    const loadChats = async () => {
       try {
-        
         const response = await fetch(`http://localhost:5000/api/chats`, {
-          method: "POST",
+          method: "GET",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`, 
           },
-          body: JSON.stringify({ ownerId: sellerId }), 
         });
 
-        if (!response.ok) throw new Error("Error al crear o cargar el chat");
-        const chat = await response.json();
-        setChatId(chat.chat._id); 
-        setMessages(chat.chat.messages || []); 
+        if (!response.ok) throw new Error("Error al cargar los chats");
+        const data = await response.json();
+        console.log("Chats", data);
+        
+        setChats(data.chats); 
       } catch (error) {
-        console.error("Error al cargar o crear el chat:", error);
+        console.error("Error al cargar los chats:", error);
       }
     };
 
-    loadOrCreateChat();
-  }, [sellerId]);
+    loadChats();
+  }, []); 
+
+  
+  useEffect(() => {
+    const loadChatMessages = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/chats/${chatId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, 
+          },
+        });
+  
+        if (!response.ok) throw new Error("Error al cargar los mensajes del chat");
+        const chatData = await response.json();
+        setMessages(chatData.chat.messages || []); 
+      } catch (error) {
+        console.error("Error al cargar los mensajes:", error);
+      }
+    };
+  
+    if (chatId) {
+      loadChatMessages();
+    }
+  }, [chatId]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return; 
@@ -67,10 +90,9 @@ export const Chat = () => {
       </div>
 
       <div className="chat-messages">
-        {messages.map((msg, index) => (
-          <p key={index}>
+        {messages.map((msg) => (
+          <p key={msg._id}>
             <strong>{msg.emisor === userId ? "Tú" : "Comprador"}:</strong> {msg.contenido}
-
           </p>
         ))}
       </div>
@@ -89,6 +111,18 @@ export const Chat = () => {
       <Link to="/home/">
         <button className="return-button">Volver al Home</button>
       </Link>
+
+      {/* Opcional: Mostrar los chats disponibles */}
+      <div className="available-chats">
+        <h3>Chats Disponibles:</h3>
+        {chats.map((chat) => (
+          <div key={chat._id}>
+            <Link to={`/chat/${chat.ownerId}`}>
+              <p>{chat.ownerName}</p>
+            </Link>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

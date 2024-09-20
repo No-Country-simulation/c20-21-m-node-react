@@ -49,7 +49,7 @@ export const Detail = () => {
 
   const handleAddToCart = () => {
     if (isGuest) {
-      alert("Debes registrarte para agregar productos al carrito.");
+      alert("Debes registrarte para agregar productos a favoritos.");
       navigate("/register");
     } else {
       if (product) {
@@ -58,7 +58,7 @@ export const Detail = () => {
           image: product.productImage[imgIndex].secure_url,
         };
         addItemToCart(productToAdd);
-        alert("Producto agregado al carrito");
+        alert("Producto agregado a favoritos");
       }
     }
   };
@@ -123,7 +123,7 @@ export const Detail = () => {
         )}
 
         <button className="add-to-cart-button" onClick={handleAddToCart}>
-          Agregar al Carrito
+          Agregar a Favoritos
         </button>
       </div>
     </>
