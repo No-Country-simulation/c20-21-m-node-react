@@ -15,13 +15,13 @@ export const Detail = () => {
   const isGuest = localStorage.getItem("guest");
 
   const { addItemToCart } = useContext(CartContext);
-  const sellerId = "123456789";
+  // const sellerId = "123456789";
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          import.meta.env.VITE_URL_BACKEND + `/api/products/${id}`,
+          `${import.meta.env.VITE_URL_BACKEND}/api/products/${id}`,
           {
             method: "GET",
             headers: {
@@ -30,14 +30,15 @@ export const Detail = () => {
             },
           }
         );
-
+    
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || "Error fetching product");
         }
         const data = await response.json();
-
-        setProduct({ ...data, sellerId: sellerId });
+    
+        // Usa el ownerId del producto
+        setProduct({ ...data, sellerId: data.ownerId }); // Asegúrate de que ownerId esté en los datos del producto
       } catch (error) {
         console.error("Error fetching product:", error);
         setError(error.message);
@@ -63,8 +64,8 @@ export const Detail = () => {
   };
 
   const handleChat = () => {
-    if (product && product.sellerId) {
-      navigate(`/chat/${product.sellerId}`);
+    if (product && product.ownerId) {
+      navigate(`/chat/${product.ownerId}`);
     } else {
       alert("No se puede iniciar el chat. El vendedor no está disponible.");
     }
