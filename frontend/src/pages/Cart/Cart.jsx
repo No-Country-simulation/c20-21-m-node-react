@@ -78,7 +78,7 @@ export const Cart = () => {
         <div className="cart-summary">
           <h2>Total: ${total.toFixed(2)}</h2>
           <button onClick={clearCart}>Limpiar Favoritos</button>
-          {/* <button onClick={handleCheckout}>Comprar</button> */}
+          {/* <button onClick={handleCheckout}>Comprar</button> da*/}
         </div>
       </div>
     </>
