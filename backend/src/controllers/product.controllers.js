@@ -2,6 +2,7 @@ import { ProductModel } from "../models/product.model.js";
 import { UserModel } from "../models/user.model.js";
 import { uploadImages, deleteImage } from "../utils/cloudinary.util.js";
 import fs from "fs-extra";
+import { findChatByUsers } from "./chat.controllers.js";
 
 export const getAllProducts = async (req, res) => {
   try {
@@ -54,13 +55,15 @@ export const getAllProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const { productId } = req.params;
-    const product = await ProductModel.findById(productId);
-
+    const product = await ProductModel.findById(productId).lean();
     if (!product) {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
-
-    return res.status(200).json(product);
+    const chat = product.ownerId
+      ? await findChatByUsers(req.user.userId, product.ownerId)
+      : {};
+    
+    return res.status(200).json({ ...product, chatId: chat._id });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error retrieving product", error });
@@ -299,7 +302,6 @@ const addProduct = async ({ userId, productId }) => {
     // Guardar cambios.
     await user.save();
 
-    console.log("El guardado del usuario fué exitoso.");
   } catch (error) {
     console.log("Error al intentar agregar un producto: ", error);
   }

@@ -69,7 +69,6 @@ export const getUserByEmail = async (req, res) => {
         if (error) {
           return console.log('Error al enviar correo:', error);
         }
-        console.log('Correo enviado: ' + info.response);
       });
       return res.status(200).json({
         Mensaje: "Se ha enviado la contraseña al mail ingresado",
@@ -139,7 +138,6 @@ export const createUser = async (req, res) => {
       if (error) {
         return console.log('Error al enviar correo:', error);
       }
-      console.log('Correo enviado: ' + info.response);
     });
 
     res.status(201).json({
