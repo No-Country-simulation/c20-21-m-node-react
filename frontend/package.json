@@ -8,8 +8,6 @@
     "prod": "vite --mode production",
     "build": "vite build",
     "lint": "eslint .",
-    "test": "vitest run",
-    "test:watch": "vitest",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -23,13 +21,10 @@
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.3.0",
-    "react-router-dom": "^6.26.1",
-    "socket.io-client": "^4.8.3"
+    "react-router-dom": "^6.26.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
@@ -38,8 +33,6 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
-    "jsdom": "^29.1.1",
-    "vite": "^5.4.2",
-    "vitest": "^4.1.8"
+    "vite": "^5.4.2"
   }
 }

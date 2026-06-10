@@ -1,251 +1,100 @@
+.navbar-container {
+  max-width: 100%;
+}
+
 .home-container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 20px;
+  text-align: center;
 }
 
-/* Hero */
-.home-hero {
-  position: relative;
-  overflow: hidden;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 48px 40px;
-  margin-bottom: 28px;
-  background-image: radial-gradient(
-    ellipse 70% 120% at 100% 0%,
-    var(--primary-dim) 0%,
-    transparent 60%
-  );
+.home-title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #333;
 }
 
-.home-hero-content {
-  max-width: 640px;
-}
-
-.home-hero h1 {
-  font-size: 2.25rem;
-  font-weight: 800;
-  letter-spacing: -1px;
-  color: var(--text-primary);
-  line-height: 1.15;
-  margin-bottom: 14px;
-}
-
-.home-hero h1 span {
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.home-hero p {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
   margin-bottom: 20px;
 }
 
-.home-hero-features {
+.product-grid-item {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  justify-content: center;
 }
 
-.hero-feature {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  padding: 7px 16px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-primary);
+.filter-button {
+  margin-bottom: 20px;
 }
 
-/* Filtros */
 .filter-container {
+  margin: 20px 0;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding: 20px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-}
-
-.filter-search {
-  position: relative;
-  display: flex;
+  justify-content: center;
+  gap: 20px;
   align-items: center;
-  gap: 10px;
-}
-
-.filter-search-icon {
-  position: absolute;
-  left: 14px;
-  color: var(--text-muted);
-  font-size: 1.05rem;
-  pointer-events: none;
-}
-
-.filter-search input {
-  flex: 1;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  padding: 11px 16px 11px 42px;
-  color: var(--text-primary);
-  font-size: 0.9375rem;
-  outline: none;
-  transition: border-color var(--transition), box-shadow var(--transition);
-}
-
-.filter-search input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-dim);
-}
-
-.filter-search input::placeholder { color: var(--text-muted); }
-
-.filter-search button {
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-full);
-  padding: 11px 22px;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background var(--transition);
-}
-
-.filter-search button:hover { background: var(--primary-hover); }
-
-.filter-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
   flex-wrap: wrap;
 }
 
-.filter-field {
+.filter-container label {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  min-width: 130px;
+  font-weight: bold;
+  color: #333;
 }
 
-.filter-field span {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+.filter-container input {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 150px;
+  max-width: 100%;
 }
 
-.filter-field input,
-.filter-field select {
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 9px 12px;
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  outline: none;
-  width: 100%;
-  transition: border-color var(--transition);
+.filter-container button {
+  padding: 10px 20px;
+  margin-top: 25px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.filter-field input:focus,
-.filter-field select:focus { border-color: var(--primary); }
-
-.filter-field input::placeholder { color: var(--text-muted); }
-
-.filter-clear {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--bg-elevated);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 9px 16px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  height: fit-content;
-  transition: color var(--transition), border-color var(--transition);
+.filter-container button:hover {
+  background-color: #555;
 }
 
-.filter-clear:hover {
-  color: var(--error);
-  border-color: var(--error);
-}
-
-.home-empty {
-  text-align: center;
-  color: var(--text-muted);
-  padding: 60px 0;
-  font-size: 0.9375rem;
-}
-
-/* Scroll infinito */
-.scroll-sentinel {
-  width: 100%;
-  height: 1px;
-}
-
-.home-loading {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  padding: 24px 0;
-}
-
-/* Paginación por bloques */
 .pagination {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 16px;
-  margin-top: 40px;
-}
-
-.pagination-info {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .pagination-button {
-  background: var(--bg-card);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 9px 24px;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  transition: color var(--transition), border-color var(--transition), background var(--transition);
-}
-
-.pagination-button:hover:not(:disabled) {
-  color: var(--text-primary);
-  border-color: var(--primary);
-  background: var(--primary-dim);
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .pagination-button:disabled {
-  opacity: 0.35;
+  background-color: #ddd;
   cursor: not-allowed;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-  .home-container { padding: 20px 16px; }
-  .home-hero { padding: 32px 22px; }
-  .home-hero h1 { font-size: 1.75rem; }
-  .filter-search { flex-wrap: wrap; }
-  .filter-search button { width: 100%; }
-  .filter-field { min-width: calc(50% - 6px); }
+.pagination-button:hover:not(:disabled) {
+  background-color: #0056b3;
 }

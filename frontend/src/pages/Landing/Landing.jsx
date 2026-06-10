@@ -34,7 +34,6 @@ export const LandingPage = () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data._id);
         localStorage.removeItem("guest");
         navigate("/home");
       } else {
@@ -62,11 +61,8 @@ export const LandingPage = () => {
     <div className="login-page">
       <div className="login-container">
         <img src={logoImage} alt="Logo" className="login-logo" />
-        <h1 className="login-brand">Pop<span>Mart</span></h1>
-        <p className="login-subtitle">
-          Comprá y vendé lo que quieras con tu comunidad
-        </p>
-
+        <h1 className="login-title">Inicio de Sesión</h1>
+        
 
         <form className="login-form" onSubmit={handleLogin}>
           <input
@@ -96,7 +92,7 @@ export const LandingPage = () => {
         </button>
 
         <div className="login-footer">
-          <a onClick={() => navigate("/recover")} className="forgot-password">
+          <a href="#" className="forgot-password">
             ¿Olvidaste tu contraseña?
           </a>
 

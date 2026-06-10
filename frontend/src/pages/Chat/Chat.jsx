@@ -1,65 +1,69 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { io } from "socket.io-client";
-import NavBar from "../../components/Navbar";
-import { FiArrowLeft, FiSend } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import logoImage from "../../assets/logoImage.svg";
 import "./Chat.styles.css";
 
 export const Chat = () => {
   const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("token");
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [partner, setPartner] = useState(null);
+  // const [chats, setChats] = useState([]);
   const { chatId } = useParams();
-  const navigate = useNavigate();
-  const endRef = useRef(null);
-  const socketRef = useRef(null);
 
-  // Carga inicial del historial + datos del otro usuario
+  // useEffect(() => {
+  //   const loadChats = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${import.meta.env.VITE_URL_BACKEND}/api/chats`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           },
+  //         }
+  //       );
+
+  //       if (!response.ok) throw new Error("Error al cargar los chats");
+  //       const data = await response.json();
+  //       console.log("Chats", data);
+
+  //       setChats(data.chats);
+  //     } catch (error) {
+  //       console.error("Error al cargar los chats:", error);
+  //     }
+  //   };
+
+  //   loadChats();
+  // }, []);
+
   useEffect(() => {
-    if (!chatId) return;
-    fetch(`${import.meta.env.VITE_URL_BACKEND}/api/chats/${chatId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al cargar los mensajes del chat");
-        return res.json();
-      })
-      .then((chatData) => {
+    const loadChatMessages = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_URL_BACKEND}/api/chats/${chatId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (!response.ok)
+          throw new Error("Error al cargar los mensajes del chat");
+        const chatData = await response.json();
         setMessages(chatData.chat.messages || []);
-        const other = chatData.chat.users?.find((u) => u._id?.toString() !== userId);
-        if (other) setPartner(other);
-      })
-      .catch((err) => console.error(err));
-  }, [chatId, token, userId]);
-
-  // Conexión en tiempo real (WebSocket)
-  useEffect(() => {
-    if (!chatId || !token) return;
-    const socket = io(import.meta.env.VITE_URL_BACKEND, { auth: { token } });
-    socketRef.current = socket;
-    socket.emit("join-chat", chatId);
-
-    socket.on("new-message", ({ chatId: cid, message }) => {
-      if (cid !== chatId) return;
-      setMessages((prev) =>
-        prev.some((m) => m._id === message._id) ? prev : [...prev, message]
-      );
-    });
-
-    return () => {
-      socket.emit("leave-chat", chatId);
-      socket.disconnect();
+      } catch (error) {
+        console.error("Error al cargar los mensajes:", error);
+      }
     };
-  }, [chatId, token]);
 
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (chatId) {
+      loadChatMessages();
+    }
+  }, [chatId]);
 
-  const handleSendMessage = async (e) => {
-    e?.preventDefault();
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     try {
@@ -69,67 +73,66 @@ export const Chat = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({ contenido: newMessage }),
         }
       );
+
       if (!response.ok) throw new Error("Error al enviar el mensaje");
-      // El mensaje se agrega vía socket (new-message). Solo limpiamos el input.
+      const updatedChat = await response.json();
+      setMessages(updatedChat.message.messages);
       setNewMessage("");
     } catch (error) {
       console.error("Error enviando mensaje:", error);
     }
   };
 
-  const partnerName = partner
-    ? `${partner.name} ${partner.lastname || ""}`.trim()
-    : "Vendedor";
-
   return (
-    <>
-      <NavBar />
-      <div className="chat-container">
-        <div className="chat-window">
-          <div className="chat-bar">
-            <button className="chat-back" onClick={() => navigate("/chats")} aria-label="Volver">
-              <FiArrowLeft />
-            </button>
-            <span className="chat-bar-name">{partnerName}</span>
-          </div>
-
-          <div className="chat-messages">
-            {messages.length === 0 && (
-              <p className="chat-empty-msg">Escribí el primer mensaje 👋</p>
-            )}
-            {messages.map((msg) => {
-              const mine = msg.emisor?.toString() === userId;
-              return (
-                <div
-                  key={msg._id}
-                  className={`chat-bubble ${mine ? "mine" : "theirs"}`}
-                >
-                  {msg.contenido}
-                </div>
-              );
-            })}
-            <div ref={endRef} />
-          </div>
-
-          <form className="chat-input" onSubmit={handleSendMessage}>
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Escribe un mensaje..."
-              className="input-message"
-            />
-            <button type="submit" className="send-button" aria-label="Enviar">
-              <FiSend />
-            </button>
-          </form>
+    <div className="chat-container">
+      <div className="chat-header">
+        <div className="popmart-logo-container">
+          <img src={logoImage} alt="PopMart logo" className="chat-logo" />
         </div>
       </div>
-    </>
+
+      <div className="chat-messages">
+        {messages.map((msg) => (
+          <p key={msg._id}>
+            <strong>{msg.emisor === userId ? "Tú" : "Comprador"}:</strong>{" "}
+            {msg.contenido}
+          </p>
+        ))}
+      </div>
+
+      <div className="chat-input">
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Escribe un mensaje..."
+          className="input-message"
+        />
+        <button onClick={handleSendMessage} className="send-button">
+          Enviar
+        </button>
+      </div>
+
+      <Link to="/home/">
+        <button className="return-button">Volver al Home</button>
+      </Link>
+
+      {/* Opcional: Mostrar los chats disponibles */}
+      {/* <div className="available-chats">
+        <h3>Chats Disponibles:</h3>
+        {chats.map((chat) => (
+          <div key={chat._id}>
+            <Link to={`/chat/${chat.ownerId}`}>
+              <p>{chat.ownerName}</p>
+            </Link>
+          </div>
+        ))}
+      </div> */}
+    </div>
   );
 };

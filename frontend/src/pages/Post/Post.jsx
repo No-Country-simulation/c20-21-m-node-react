@@ -3,148 +3,122 @@ import NavBar from "../../components/Navbar";
 import "./post.styles.css";
 import { FaEye, FaPen, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
-
-const PLACEHOLDER = "https://via.placeholder.com/80";
 
 export const Post = () => {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [error, setError] = useState(null); // Estado para manejar errores
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false);
-      return;
+    if (token) {
+      setIsAuthenticated(true);
     }
+  }, []);
 
-    fetch(import.meta.env.VITE_URL_BACKEND + "/api/products/posts", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error ${res.status}`);
-        return res.json();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      fetch(import.meta.env.VITE_URL_BACKEND + `/api/products/posts`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((data) => {
-        if (data.status === "success") setProducts(data.payload);
-        else throw new Error(data.error || "Error al cargar productos");
-      })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.status === "success") {
+            setProducts(data.payload);
+          } else {
+            throw new Error(data.error || "Error fetching products");
+          }
+        })
+        .catch((error) => {
+          setError(error.message); // Guarda el mensaje de error
+        });
+    } else {
+      setError("No token provided");
+    }
   }, []);
 
   const handleDelete = async (productId) => {
-    if (!window.confirm("¿Estás seguro de que querés eliminar este producto?")) return;
-
     const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_URL_BACKEND}/api/products/${productId}`,
-        {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/api/products/${productId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error deleting product: ${response.status}`);
         }
-      );
 
-      if (!response.ok) throw new Error(`Error al eliminar: ${response.status}`);
-
-      setProducts((prev) => prev.filter((p) => p._id !== productId));
-      toast.success("Producto eliminado.");
-    } catch (err) {
-      toast.error(err.message);
+        // Filter out the deleted product from the state
+        setProducts(products.filter(product => product._id !== productId));
+      } catch (error) {
+        setError(error.message);
+      }
     }
   };
 
-  const handleStatusChange = async (productId, status) => {
-    const token = localStorage.getItem("token");
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_URL_BACKEND}/api/products/${productId}/status`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ status }),
-        }
-      );
-      if (!res.ok) throw new Error("No se pudo cambiar el estado.");
-      setProducts((prev) =>
-        prev.map((p) => (p._id === productId ? { ...p, status } : p))
-      );
-      toast.success("Estado actualizado.");
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+  //Función para preformatear la hora devuelta por mongo
+  const formatDateAndTime = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes en dos dígitos
+    const day = String(date.getDate()).padStart(2, '0'); // Día en dos dígitos
+    const hours = String(date.getHours()).padStart(2, '0'); // Horas en dos dígitos
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // Minutos en dos dígitos
 
-  const formatDate = (dateString) => {
-    const d = new Date(dateString);
-    const pad = (n) => String(n).padStart(2, "0");
-    return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} - ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  };
-
-  const token = localStorage.getItem("token");
+    return `${year}/${month}/${day} - ${hours}:${minutes}`;
+}
 
   return (
     <div>
       <NavBar />
       <div className="main-container">
         <div className="cards-container">
-          {loading && <p>Cargando publicaciones...</p>}
-
-          {error && <p className="post-error">Error: {error}</p>}
-
-          {!loading && !error && !token && (
-            <p>Debés iniciar sesión para ver tus publicaciones.</p>
+          {error ? ( // Mostrar el error en caso de que ocurra
+            <p>Error: {error}</p>
+          ) : isAuthenticated && products.length > 0 ? (
+            //recorre todos los productos creados por quien inició sesión
+            products.map((product) => (
+              <div key={product._id} className="post-card">
+                <div className="post-image-container">
+                  <img src={product.productImage[0].secure_url} alt="image" />
+                </div>
+                <div className="title-container">
+                  <Link to={`/home/${product._id}`}>
+                    <p className="post-title">{product.title}</p>
+                  </Link>
+                  <label>{formatDateAndTime(product.createdAt)}</label>
+                </div>
+                <div className="icons-container">
+                  <Link to={`/home/${product._id}`}>
+                    <FaEye className="icon" /> {/* Ícono de ojo */}
+                  </Link>
+                  <Link to={`/edit/${product._id}`}>
+                    <FaPen className="icon" /> {/* Ícono de lápiz */}
+                  </Link>
+                    <FaTimes className="icon delete" onClick={() => handleDelete(product._id)}/> {/* Ícono de cruz */}
+              
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No products available</p>
           )}
-
-          {!loading && !error && token && products.length === 0 && (
-            <p>Todavía no tenés productos publicados.</p>
-          )}
-
-          {products.map((product) => (
-            <div key={product._id} className="post-card">
-              <div className="post-image-container">
-                <img
-                  src={product.productImage?.[0]?.secure_url || PLACEHOLDER}
-                  alt={product.title}
-                />
-              </div>
-              <div className="title-container">
-                <Link to={`/home/${product._id}`}>
-                  <p className="post-title">{product.title}</p>
-                </Link>
-                <label>{product.createdAt ? formatDate(product.createdAt) : ""}</label>
-              </div>
-              <div className="icons-container">
-                <select
-                  className="post-status"
-                  value={product.status || "available"}
-                  onChange={(e) => handleStatusChange(product._id, e.target.value)}
-                >
-                  <option value="available">Disponible</option>
-                  <option value="reserved">Reservado</option>
-                  <option value="sold">Vendido</option>
-                </select>
-                <Link to={`/home/${product._id}`}>
-                  <FaEye className="icon" />
-                </Link>
-                <Link to={`/edit/${product._id}`}>
-                  <FaPen className="icon" />
-                </Link>
-                <FaTimes className="icon delete" onClick={() => handleDelete(product._id)} />
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>

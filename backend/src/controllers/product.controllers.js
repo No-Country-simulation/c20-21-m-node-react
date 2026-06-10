@@ -6,66 +6,32 @@ import { findChatByUsers } from "./chat.controllers.js";
 
 export const getAllProducts = async (req, res) => {
   try {
-    const {
-      limit = 10,
-      page = 1,
-      query = "",
-      status = "available",
-      minPrice,
-      maxPrice,
-      category,
-      province,
-      sort = "recent",
-    } = req.query;
+    const { limit = 10, page = 1, query = "" } = req.query;
     let filter = {};
 
-    if (province) {
-      const escapedProv = province.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      filter["location.province"] = { $regex: escapedProv, $options: "i" };
-    }
-
-    // status=all devuelve todo; por defecto solo disponibles en el catálogo
-    if (status !== "all") {
-      filter.status = status;
-    }
-
     if (query) {
-      // Escapar caracteres especiales para evitar ReDoS
-      const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      filter.$or = [
-        { title: { $regex: escaped, $options: "i" } },
-        { category: { $regex: escaped, $options: "i" } },
-      ];
+      filter = {
+        $or: [
+          { title: { $regex: query, $options: "i" } },
+          { category: { $regex: query, $options: "i" } },
+        ],
+      };
     }
-
-    if (category) {
-      const escapedCat = category.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      filter.category = { $regex: escapedCat, $options: "i" };
-    }
-
-    if (minPrice || maxPrice) {
-      filter.price = {};
-      if (minPrice) filter.price.$gte = Number(minPrice);
-      if (maxPrice) filter.price.$lte = Number(maxPrice);
-    }
-
-    const sortMap = {
-      recent: { createdAt: -1 },
-      "price-asc": { price: 1 },
-      "price-desc": { price: -1 },
-      title: { title: 1 },
-    };
 
     const options = {
-      limit: Math.min(Number(limit), 50),
+      limit: Number(limit),
       page: Number(page),
-      sort: sortMap[sort] || sortMap.recent,
+      // populate: {
+      //   path: "users",
+      //   select: "name",
+      // },
     };
 
     const result = await ProductModel.paginate(filter, options);
-    const linkPage = (p) => `/api/products/?limit=${limit}&page=${p}&query=${query}`;
-
-    return res.status(200).json({
+    const linkPage = (page) => {
+      return `/api/products/?limit=${limit}&page=${page}&query=${query}`;
+    };
+    res.status(200).json({
       status: "success",
       payload: result.docs,
       totalPages: result.totalPages,
@@ -78,7 +44,11 @@ export const getAllProducts = async (req, res) => {
       nextLink: result.hasNextPage ? linkPage(result.nextPage) : null,
     });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al obtener productos." });
+    res.json({
+      status: "error",
+      message: "Error al intentar obtener todos los productos",
+      error: error,
+    });
   }
 };
 
@@ -89,79 +59,103 @@ export const getProductById = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
-
-    let chatId = null;
-    if (req.user && product.ownerId) {
-      const chat = await findChatByUsers(req.user.userId, product.ownerId);
-      chatId = chat?._id || null;
-    }
-
-    return res.status(200).json({ ...product, chatId });
+    const chat = product.ownerId
+      ? await findChatByUsers(req.user.userId, product.ownerId)
+      : {};
+    
+    return res.status(200).json({ ...product, chatId: chat?._id });
   } catch (error) {
-    return res.status(500).json({ message: "Error al obtener el producto." });
+    console.error(error);
+    return res.status(500).json({ message: "Error retrieving product", error });
   }
 };
 
 export const getProductsByUser = async (req, res) => {
   try {
     const { userId } = req.user;
-    const user = await UserModel.findById(userId).populate("products");
-    if (!user) return res.status(404).json({ message: "Usuario no encontrado." });
-    return res.status(200).json({ status: "success", payload: user.products });
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
+      });
+    }
+
+    const { products } = await UserModel.findById(userId).populate("products");
+    if (!products) {
+      return res.status(400).json({ message: "Products not founded" });
+    }
+    return res.status(200).json({ status: "success", payload: products });
   } catch (error) {
-    return res.status(500).json({ message: "Error al obtener los productos del usuario." });
+    return res.status(400).json({ message: error });
   }
 };
 
 export const createProduct = async (req, res) => {
   try {
-    const { title, price, description, category, province, city } = req.body;
-    const { userId } = req.user;
-
-    if (!title || !description || !price || !category) {
-      return res.status(400).json({ status: "error", message: "Todos los campos son requeridos." });
-    }
-
-    if (Number(price) < 0) {
-      return res.status(400).json({ status: "error", message: "El precio no puede ser negativo." });
-    }
+    const { title, price, description, category } = req.body;
+    const { email, userId } = req.user;
 
     if (!req.files || !req.files.productImage) {
-      return res.status(400).json({ status: "error", message: "Se requiere al menos una imagen." });
+      return res.status(400).json({
+        status: "error",
+        message: "No se ha recibido una imagen para subir.",
+      });
     }
-
+    //Crea un array de images, si se sube solo un archivo se mantendrá el formato de array []
     const images = Array.isArray(req.files.productImage)
       ? req.files.productImage
       : [req.files.productImage];
 
+    //Devuelve un conjunto de promesas donde cada file(imagen subida) que se encuentra en un archivo temporal, se subirá al servicio cloudinary
     const uploadedImages = await Promise.all(
       images.map(async (file) => {
         const result = await uploadImages(file.tempFilePath);
-        await fs.unlink(file.tempFilePath).catch(() => {});
-        if (!result) throw new Error("Error subiendo imagen a Cloudinary.");
-        return { public_id: result.public_id, secure_url: result.secure_url };
+        //fs.unlink sirve para eliminar el archivo temporal creado en nuestro servidor
+        await fs.unlink(file.tempFilePath);
+        return result;
       })
     );
+    //Devuelve en req.body.productId un array de objetos con las propiedades public_id y secure_url
+    req.body.productImage = uploadedImages.map((image) => ({
+      public_id: image.public_id,
+      secure_url: image.secure_url,
+    }));
 
-    const product = await ProductModel.create({
+    if (!title || !description || !uploadedImages || !price || !category) {
+      return res.status(400).json({
+        status: "error",
+        message: "Debe ingresar todos los campos.",
+      });
+    }
+    const product = await new ProductModel({
       title,
-      price: Number(price),
+      price,
       description,
-      productImage: uploadedImages,
+      productImage: req.body.productImage, //Guarda las imagenes con sus respectivas propiedades public_id y secure_url
       category,
-      location: { province: province || "", city: city || "" },
       ownerId: userId,
     });
 
-    await addProduct({ userId, productId: product._id });
+    const savedProduct = await product.save();
+    // user.productsId = [...user.productsId, savedProduct._id];
+    // await user.save();
 
-    return res.status(201).json({
+    await addProduct({
+      userId: userId,
+      productId: product._id,
+    });
+
+    res.status(201).json({
       status: "success",
-      message: "Producto creado exitosamente.",
+      message: "El producto ha sido creado",
       data: product,
     });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al crear el producto." });
+    res.status(400).json({
+      status: "error",
+      message: "Error al intentar crear el producto",
+      error: error,
+    });
   }
 };
 
@@ -171,20 +165,25 @@ export const updateProductById = async (req, res) => {
     const { title, price, description, category } = req.body;
     const { userId } = req.user;
 
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
+      });
+    }
+
     const existingProduct = await ProductModel.findById(productId);
     if (!existingProduct) {
-      return res.status(404).json({ status: "error", message: "Producto no encontrado." });
+      return res.status(404).json({
+        status: "error",
+        message: "Producto no encontrado",
+      });
     }
-
-    // Verificar que el usuario es el dueño
-    if (existingProduct.ownerId?.toString() !== userId.toString()) {
-      return res.status(403).json({ status: "error", message: "No tienes permiso para editar este producto." });
-    }
-
-    if (price !== undefined && Number(price) < 0) {
-      return res.status(400).json({ status: "error", message: "El precio no puede ser negativo." });
-    }
-
+    //Si se desea eliminar las imagenes ya guardadas del servicio cludinary y subir unas nuevas
+    // if (existingProduct.productImage && existingProduct.productImage.length > 0) {
+    //   for (let image of existingProduct.productImage) {
+    //     await deleteImage(image.public_id);
+    //   }
+    // }
     let uploadedImages = existingProduct.productImage || [];
     if (req.files && req.files.productImage) {
       const images = Array.isArray(req.files.productImage)
@@ -194,9 +193,11 @@ export const updateProductById = async (req, res) => {
       uploadedImages = await Promise.all(
         images.map(async (file) => {
           const result = await uploadImages(file.tempFilePath);
-          await fs.unlink(file.tempFilePath).catch(() => {});
-          if (!result) throw new Error("Error subiendo imagen.");
-          return { public_id: result.public_id, secure_url: result.secure_url };
+          await fs.unlink(file.tempFilePath);
+          return {
+            public_id: result.public_id,
+            secure_url: result.secure_url,
+          };
         })
       );
     }
@@ -204,93 +205,104 @@ export const updateProductById = async (req, res) => {
     const updatedProduct = await ProductModel.findByIdAndUpdate(
       productId,
       {
-        ...(title && { title }),
-        ...(price !== undefined && { price: Number(price) }),
-        ...(description && { description }),
-        ...(category && { category }),
-        productImage: uploadedImages,
+        title,
+        price,
+        description,
+        category,
+        productImage: uploadedImages.map((image) => ({
+          public_id: image.public_id,
+          secure_url: image.secure_url,
+        })),
       },
       { new: true }
     );
 
-    return res.status(200).json({
+    if (!updatedProduct) {
+      return res.status(404).json({
+        status: "error",
+        message: "No se encontró el producto",
+      });
+    }
+
+    res.status(200).json({
       status: "success",
-      message: "Producto actualizado.",
+      message: "El producto ha sido actualizado",
       data: updatedProduct,
     });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al actualizar el producto." });
+    res.status(400).json({
+      status: "error",
+      message: "La búsqueda es incorrecta",
+      error: error,
+    });
   }
 };
 
-export const updateProductStatus = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const { status } = req.body;
-    const { userId } = req.user;
-
-    if (!["available", "reserved", "sold"].includes(status)) {
-      return res.status(400).json({ status: "error", message: "Estado inválido." });
-    }
-
-    const product = await ProductModel.findById(productId);
-    if (!product) {
-      return res.status(404).json({ status: "error", message: "Producto no encontrado." });
-    }
-    if (product.ownerId?.toString() !== userId.toString()) {
-      return res.status(403).json({ status: "error", message: "No tenés permiso." });
-    }
-
-    product.status = status;
-    await product.save();
-
-    return res.status(200).json({ status: "success", data: product });
-  } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al actualizar el estado." });
-  }
-};
-
-export const deleteProductById = async (req, res) => {
+export const deleteProductById = async (req, res, next) => {
   try {
     const { userId } = req.user;
     const { productId } = req.params;
 
-    const product = await ProductModel.findById(productId);
-    if (!product) {
-      return res.status(404).json({ status: "error", message: "Producto no encontrado." });
+    if (!userId) {
+      return res.status(400).json({
+        message: "Data userId not found",
+      });
+    }
+    const deletedProduct = await ProductModel.findOneAndDelete({
+      _id: productId,
+    });
+    if (!deletedProduct) {
+      return res.json({
+        status: "error",
+        message: "No se encontró el producto",
+      });
+    }
+    if (deletedProduct.productImage && deletedProduct.productImage.length > 0) {
+      for (let image of deletedProduct.productImage) {
+        await deleteImage(image.public_id);
+      }
     }
 
-    // Verificar que el usuario es el dueño
-    if (product.ownerId?.toString() !== userId.toString()) {
-      return res.status(403).json({ status: "error", message: "No tienes permiso para eliminar este producto." });
-    }
-
-    await ProductModel.findByIdAndDelete(productId);
-
-    if (product.productImage?.length > 0) {
-      await Promise.allSettled(product.productImage.map((img) => deleteImage(img.public_id)));
-    }
-
-    // Remover el producto del array del usuario
-    await UserModel.findByIdAndUpdate(userId, { $pull: { products: productId } });
-
-    return res.status(200).json({ status: "success", message: "Producto eliminado." });
+    return res.status(200).json({
+      status: "success",
+      message: "El producto ha sido borrado",
+      data: deletedProduct,
+    });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al eliminar el producto." });
+    res.json({
+      status: "error",
+      message: "Error al intentar borrar el producto",
+      error: error,
+    });
   }
 };
 
+// Asociar producto con el usuario, se agrega al array de products. ✅
 const addProduct = async ({ userId, productId }) => {
   try {
+    // Verificar si el id del User existe.
     const user = await UserModel.findById(userId);
-    if (!user) return;
-
-    const exists = user.products.some((p) => p._id.toString() === productId.toString());
-    if (!exists) {
-      user.products.push(productId);
-      await user.save();
+    if (!user) {
+      return console.log("EL usuario no existe");
     }
+
+    // Verificar si el pid ya está en el array products del User
+    const productExists = user.products.some(
+      (product) => product._id.toString() === productId
+    );
+    if (productExists) {
+      return console.log("El producto ya está asociado con este usuario.");
+    }
+
+    // Guardar el id en el array products del User.
+    user.products.push({
+      _id: productId,
+    });
+
+    // Guardar cambios.
+    await user.save();
+
   } catch (error) {
-    console.error("Error al asociar producto al usuario:", error.message);
+    console.log("Error al intentar agregar un producto: ", error);
   }
 };

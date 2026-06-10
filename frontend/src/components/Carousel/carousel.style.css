@@ -1,51 +1,57 @@
 .carousel-container {
   position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.carousel-buttons {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-  display: flex;
-  justify-content: space-between;
-  width: calc(100% - 16px);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.carousel-button {
-  pointer-events: all;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(10, 11, 18, 0.7);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition);
-  padding: 0;
-}
-
-.carousel-button:hover {
-  background: rgba(124,93,250,0.7);
 }
 
 .carousel-number {
   position: absolute;
-  bottom: 8px;
   left: 50%;
   translate: -50% 0;
-  background: rgba(10,11,18,0.65);
-  color: rgba(255,255,255,0.75);
-  font-size: 0.7rem;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  z-index: 2;
+  top: 90%;
+  color: rgb(86, 85, 85);
+  font-size: small;
+}
+
+.carousel-buttons {
+  display: flex;
+  gap: 8em;
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  top: 50%;
+}
+
+.carousel-button {
+  border-radius: 50%;
+  background: rgb(190, 190, 190);
+  opacity: 50%;
+  color: black;
+  padding: 5px;
+}
+
+@media (min-width: 480px) {
+  .carousel-buttons {
+    gap: 9em;
+  }
+  .carousel-button {
+    padding: 8px;
+  }
+}
+@media (min-width: 800px) {
+  .carousel-buttons {
+    gap: 15vw;
+  }
+  .carousel-button {
+    padding: 10px;
+  }
+}
+@media (min-width: 1024px) {
+  .carousel-buttons {
+    gap: 10em;
+  }
+}
+
+@media (min-width: 1154px) {
+  .carousel-buttons {
+    gap: 12em;
+  }
 }

@@ -2,39 +2,38 @@ import { Router } from "express";
 import {
   getAllUsers,
   getUserById,
-  getPublicUser,
   getUserByEmail,
-  resetPassword,
-  verifyEmail,
-  getFavorites,
-  addFavorite,
-  removeFavorite,
   createUser,
   updateUser,
-  changePassword,
   deleteUser,
   loginUser,
 } from "../controllers/user.controllers.js";
-import auth from "../middlewares/auth.js";
+import multer from "multer";
 
+// Middleware
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 const app = Router();
 
-app.get("/", auth, getAllUsers);
+// GET all users ✅
+app.get("/", getAllUsers);
 
-// Favoritos (antes de /:id para que no choque)
-app.get("/me/favorites", auth, getFavorites);
-app.post("/me/favorites", auth, addFavorite);
-app.delete("/me/favorites/:productId", auth, removeFavorite);
+// GET user by id ✅
+app.get("/:id", getUserById);
 
-app.get("/verify", verifyEmail);
-app.get("/:id/public", getPublicUser);
-app.get("/:id", auth, getUserById);
+// GET user by email (Para olvide contraseña) ✅
 app.post("/recover", getUserByEmail);
-app.post("/reset-password", resetPassword);
+
+// POST create user ✅
 app.post("/register", createUser);
+
+// POST login user ✅
 app.post("/login", loginUser);
-app.put("/:id/password", auth, changePassword);
-app.put("/:id", auth, updateUser);
-app.delete("/:id", auth, deleteUser);
+
+// UPDATE user by id. ✅
+app.put("/:id", updateUser);
+
+// DELETE user by id. ✅
+app.delete("/:id", deleteUser);
 
 export default app;

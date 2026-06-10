@@ -2,64 +2,49 @@ import mongoose from "mongoose";
 import { ChatModel } from "../models/chat.model.js";
 import { UserModel } from "../models/user.model.js";
 
+// Trae todos los chats.
 export const getAllChats = async (req, res) => {
   try {
-    const { userId } = req.user;
-    // Solo devuelve los chats del usuario autenticado, con datos de los participantes
-    const chats = await ChatModel.find({ users: userId })
-      .populate("users", "name lastname image")
-      .sort({ updatedAt: -1 });
-    return res.status(200).json({ chats });
-  } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al obtener los chats." });
-  }
-};
-
-export const getUnreadCount = async (req, res) => {
-  try {
-    const { userId } = req.user;
-    const chats = await ChatModel.find({ users: userId }).select("messages");
-    let count = 0;
-    chats.forEach((chat) => {
-      chat.messages.forEach((m) => {
-        if (m.emisor.toString() !== userId.toString() && !m.read) count++;
-      });
+    const chats = await ChatModel.find({});
+    /*.populate({
+      path: "mensajes.emisor",
+      select: "name",
     });
-    return res.status(200).json({ count });
+    */
+    res.status(200).json({
+      chats: chats,
+    });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al obtener no leídos." });
+    res.status(400).json({
+      status: "Error.",
+      message: "Error al traer los chats.",
+      Error: error,
+    });
   }
 };
 
+// Tarer un chat por id(id del chat).
 export const getChatById = async (req, res) => {
   try {
     const { id } = req.params;
-    const { userId } = req.user;
+    const chat = await ChatModel.findById(id);
 
-    const chat = await ChatModel.findById(id).populate("users", "name lastname image");
     if (!chat) {
-      return res.status(404).json({ status: "error", message: "Chat no encontrado." });
+      return res.status(404).json({
+        status: "Error.",
+        message: "ID no encontrado.",
+      });
     }
 
-    // Verificar que el usuario pertenece al chat
-    const isMember = chat.users.some((u) => u._id.toString() === userId.toString());
-    if (!isMember) {
-      return res.status(403).json({ status: "error", message: "No tienes acceso a este chat." });
-    }
-
-    // Marcar como leídos los mensajes recibidos (de la otra persona)
-    let changed = false;
-    chat.messages.forEach((m) => {
-      if (m.emisor.toString() !== userId.toString() && !m.read) {
-        m.read = true;
-        changed = true;
-      }
+    res.status(200).json({
+      chat: chat,
     });
-    if (changed) await chat.save();
-
-    return res.status(200).json({ chat });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al obtener el chat." });
+    res.status(500).json({
+      status: "Error.",
+      message: "Error al traer los chats.",
+      Error: error,
+    });
   }
 };
 
@@ -73,112 +58,150 @@ export const findChatByUsers = async (userId, productOwnerId) => {
   }
 };
 
+//   Crear un chat.
 export const createNewChat = async (req, res) => {
   try {
     const { userId } = req.user;
     const { ownerId } = req.body;
+    const users = [userId, ownerId];
 
-    if (!ownerId || !mongoose.Types.ObjectId.isValid(ownerId)) {
-      return res.status(400).json({ error: "ID del destinatario inválido." });
+    //  Validacion de id existentes.
+    if (
+      !Array.isArray(users) ||
+      users.some((id) => !mongoose.Types.ObjectId.isValid(id))
+    ) {
+      return res.status(400).json({ error: "Integrantes inválidos." });
     }
 
-    if (userId.toString() === ownerId.toString()) {
-      return res.status(400).json({ error: "No puedes crear un chat contigo mismo." });
-    }
-
-    // Verificar que no existe ya un chat entre estos usuarios
-    const existingChat = await ChatModel.findOne({
-      users: { $all: [userId, ownerId] },
+    const newChat = new ChatModel({
+      users,
+      message: [],
     });
-    if (existingChat) {
-      return res.status(200).json({ status: "success", chat: existingChat });
-    }
 
-    const newChat = await ChatModel.create({ users: [userId, ownerId], messages: [] });
+    // Guardar chat
+    const savedChat = await newChat.save();
+    // Vincular al chat con user.
+    await addChat(userId, savedChat._id);
+    await addChat(ownerId, savedChat._id);
 
-    await addChat(userId, newChat._id);
-    await addChat(ownerId, newChat._id);
-
-    return res.status(201).json({ status: "success", chat: newChat });
+    res.status(200).json({
+      status: "success",
+      chat: savedChat,
+    });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al crear el chat." });
+    res.status(500).json({
+      status: "error",
+      message: `Error al crear el chat: ${error.message}`,
+    });
   }
 };
 
+// Agregar mensajes en un chat.
 export const addMessages = async (req, res) => {
   try {
     const { id } = req.params;
     const { contenido } = req.body;
     const { userId } = req.user;
 
-    if (!contenido?.trim()) {
-      return res.status(400).json({ status: "error", message: "El mensaje no puede estar vacío." });
+    // Validar parámetros de entrada
+    if (!id || !contenido || !userId) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "ID del chat, contenido del mensaje o ID del usuario faltantes.",
+      });
     }
 
-    if (contenido.length > 1000) {
-      return res.status(400).json({ status: "error", message: "El mensaje excede el límite de 1000 caracteres." });
-    }
-
+    //  Encontrar el chat por id.
     const chat = await ChatModel.findById(id);
+
+    // Verificar si el chat existe
     if (!chat) {
-      return res.status(404).json({ status: "error", message: "Chat no encontrado." });
+      return res.status(404).json({
+        status: "error",
+        message: "Chat no encontrado.",
+      });
     }
 
-    // Verificar que el usuario pertenece al chat
-    const isMember = chat.users.some((u) => u.toString() === userId.toString());
-    if (!isMember) {
-      return res.status(403).json({ status: "error", message: "No tienes acceso a este chat." });
-    }
+    //  Crear el mensaje.
+    const newMessage = {
+      emisor: userId,
+      contenido: contenido,
+    };
 
-    chat.messages.push({ emisor: userId, contenido: contenido.trim() });
-    const saved = await chat.save();
+    // Pushear el mensaje.
+    chat.messages = [...chat.messages, newMessage];
 
-    // Emitir el último mensaje en tiempo real a la sala del chat
-    const lastMessage = saved.messages[saved.messages.length - 1];
-    const io = req.app.get("io");
-    if (io) io.to(id).emit("new-message", { chatId: id, message: lastMessage });
+    //  Guardar mensaje
+    const savedMessage = await chat.save();
 
-    return res.status(200).json({ message: saved });
+    res.status(200).json({
+      message: savedMessage,
+    });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al enviar el mensaje." });
+    res.status(500).json({
+      status: "error",
+      message: `Error al agregar el mensaje. ${error}`,
+    });
   }
 };
 
+//  Delete Chat.
 export const deleteChat = async (req, res) => {
   try {
     const { id } = req.params;
-    const { userId } = req.user;
+    const chat = await ChatModel.findByIdAndDelete(id);
 
-    const chat = await ChatModel.findById(id);
+    // Verificacion de la existencia del chat.
     if (!chat) {
-      return res.status(404).json({ status: "error", message: "Chat no encontrado." });
+      res.status(404).json({
+        status: "Error",
+        message: "No se ha encontrado el chat por id.",
+      });
     }
 
-    const isMember = chat.users.some((u) => u.toString() === userId.toString());
-    if (!isMember) {
-      return res.status(403).json({ status: "error", message: "No tienes permiso para eliminar este chat." });
-    }
-
-    await ChatModel.findByIdAndDelete(id);
-
-    return res.status(200).json({ status: "success", message: "Chat eliminado." });
+    res.status(200).json({
+      status: "Success,",
+      message: "Se ha eliminado el chat correctamente.",
+      datas: chat,
+    });
   } catch (error) {
-    return res.status(500).json({ status: "error", message: "Error al eliminar el chat." });
+    res.status(500).json({
+      status: "Error",
+      message: error,
+    });
   }
 };
 
+// Agrega un chat a un User, lo vincula.
 const addChat = async (userId, chatId) => {
   try {
+    // Verificar si el id del User existe.
     const user = await UserModel.findById(userId);
-    if (!user) return;
-
-    // Fix: verificar en user.chats (no user.products como estaba antes)
-    const chatExists = user.chats.some((c) => c._id.toString() === chatId.toString());
-    if (!chatExists) {
-      user.chats.push(chatId);
-      await user.save();
+    if (!user) {
+      return console.log("EL usuario no existe");
     }
+
+    // Verificar si el pid ya está en el array products del User
+    const chatExists = user.products.some(
+      (product) => product._id.toString() === chatId
+    );
+    if (chatExists) {
+      return console.log("El chat ya está asociado con este usuario.");
+    }
+
+    // Guardar el id en el array products del User.
+    user.chats.push({
+      _id: chatId,
+    });
+
+    // Guardar cambios.
+    await user.save();
+
   } catch (error) {
-    console.error("Error al vincular chat al usuario:", error.message);
+    console.log(
+      "Error al intentar agregar un id de chat al usermodel (chats): ",
+      error
+    );
   }
 };

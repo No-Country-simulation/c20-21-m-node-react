@@ -27,7 +27,7 @@ function Register() {
   }
 
   const handleResponseOk = (data) => {
-    toast.success('¡Registro exitoso! Redirigiendo...');
+    toast.success('Product created successfully');
     resetAllFields();
     setTimeout(()=>navigate("/"), 2000)
     
@@ -73,7 +73,7 @@ function Register() {
         'Content-Type': 'application/json',
       },
     })
-      .then(response => response.ok ? response.json() : response.json().then(err => { throw err }))
+      .then(response => response.json())
       .then(data => handleResponseOk(data))
       .catch(error => handleResponseError(error))
 

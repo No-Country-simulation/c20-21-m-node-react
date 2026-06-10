@@ -1,12 +1,23 @@
 .cards-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 480px){
   .cards-list {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 24px;
+    gap: 20px;
+  }
+}
+@media (min-width: 800px){
+  .cards-list {
+    gap: 30px;
+  }
+}
+@media (min-width: 1024px){
+  .cards-list {
+    gap: 30px;
   }
 }

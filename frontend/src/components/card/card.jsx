@@ -4,16 +4,9 @@ import "./card.styles.css";
 import Carousel from "../Carousel/Carousel";
 
 const Card = ({ product }) => {
-  const statusLabel = { reserved: "Reservado", sold: "Vendido" };
-
   return (
     <div className="card-container">
       <Link to={`/home/${product._id}`}>
-        {product.status && product.status !== "available" && (
-          <span className={`card-badge card-badge-${product.status}`}>
-            {statusLabel[product.status]}
-          </span>
-        )}
         <Carousel>
           {product.productImage && product.productImage.length > 0 ? (
             product.productImage.map((image, index) => (

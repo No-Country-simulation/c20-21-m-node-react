@@ -25,15 +25,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["available", "reserved", "sold"],
-      default: "available",
-    },
-    location: {
-      province: { type: String, default: "" },
-      city: { type: String, default: "" },
-    },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

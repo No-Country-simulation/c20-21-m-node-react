@@ -1,258 +1,167 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
-import Footer from "../../components/Footer";
 import Cards from "../../components/cards/cards";
-import { FiSearch, FiX } from "react-icons/fi";
+import logoImage from "../../assets/logoImage.svg";
 import "./home.styles.css";
-
-const PAGE_SIZE = 12;
-const PAGES_PER_BLOCK = 5; // 5 x 12 = 60 productos por bloque
-const CATEGORIES = [
-  "Electrónica",
-  "Hogar",
-  "Indumentaria",
-  "Vehículos",
-  "Juguetes",
-  "Deportes",
-  "Coleccionables",
-  "Otros",
-];
 
 export const Home = () => {
   const [products, setProducts] = useState([]);
-  const [order, setOrder] = useState("recent");
-  const [block, setBlock] = useState(0); // bloque de 60 (0-indexado)
-  const [page, setPage] = useState(1); // página de la API (1-indexada)
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [orderBy, setOrderBy] = useState({ field: "title", order: "asc" });
+  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [category, setCategory] = useState("");
-  const [province, setProvince] = useState("");
-  const [loading, setLoading] = useState(false);
-  const sentinelRef = useRef(null);
+  const productsPerPage = 9;
 
-  const filteredProducts = products;
-  const blockStartPage = block * PAGES_PER_BLOCK + 1;
-  const totalBlocks = Math.ceil(totalPages / PAGES_PER_BLOCK);
-  // ¿Quedan páginas por cargar dentro del bloque actual (máx 60)?
-  const canScrollMore = page < totalPages && page < blockStartPage + PAGES_PER_BLOCK - 1;
-
-  // Fetch con filtros/orden aplicados en el servidor sobre TODO el catálogo
   useEffect(() => {
-    const params = new URLSearchParams({
-      limit: PAGE_SIZE,
-      page,
-      sort: order,
-    });
-    if (searchQuery) params.set("query", searchQuery);
-    if (minPrice) params.set("minPrice", minPrice);
-    if (maxPrice) params.set("maxPrice", maxPrice);
-    if (category) params.set("category", category);
-    if (province) params.set("province", province);
-
-    setLoading(true);
-    fetch(`${import.meta.env.VITE_URL_BACKEND}/api/products?${params.toString()}`)
+    const query = searchQuery ? `&query=${searchQuery}` : "";
+    fetch(
+      import.meta.env.VITE_URL_BACKEND +
+        `/api/products?limit=${productsPerPage}&page=${page}${query}`
+    )
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
-          // El inicio de un bloque reemplaza; el resto se va sumando al scrollear
-          setProducts((prev) =>
-            page === blockStartPage ? data.payload : [...prev, ...data.payload]
-          );
+          setProducts(data.payload);
+          setFilteredProducts(data.payload);
           setTotalPages(data.totalPages);
         } else {
           console.error("Error fetching products:", data.error);
         }
       })
-      .catch((error) => console.error("Error fetching products:", error))
-      .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, searchQuery, order, minPrice, maxPrice, category, province]);
+      .catch((error) => console.error("Error fetching products:", error));
+  }, [page, searchQuery]);
 
-  // Scroll infinito hasta completar el bloque (60 productos)
+  const filterProducts = () => {
+    let filtered = [...products];
+
+    if (searchQuery) {
+      filtered = filtered.filter((product) =>
+        product.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (minPrice) {
+      filtered = filtered.filter(
+        (product) => product.price >= Number(minPrice)
+      );
+    }
+
+    if (maxPrice) {
+      filtered = filtered.filter(
+        (product) => product.price <= Number(maxPrice)
+      );
+    }
+
+    if (category) {
+      filtered = filtered.filter(
+        (product) => product.category.toLowerCase() === category.toLowerCase()
+      );
+    }
+
+    filtered.sort((a, b) => {
+      const titleA = a.title.toLowerCase();
+      const titleB = b.title.toLowerCase();
+      if (titleA < titleB) return orderBy.order === "asc" ? -1 : 1;
+      if (titleA > titleB) return orderBy.order === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setFilteredProducts(filtered);
+  };
+
+  // Por si deseamos que los productos se filtren inmediatamente al poner un valor en los filtros
   useEffect(() => {
-    if (!canScrollMore) return;
-    const el = sentinelRef.current;
-    if (!el) return;
+    filterProducts();
+  }, [orderBy, searchQuery]); // Comentar esto
+  // }, [products, searchQuery, minPrice, maxPrice, category, orderBy]); // Descomentar esto
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading) {
-          setPage((p) => p + 1);
-        }
-      },
-      { rootMargin: "200px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [canScrollMore, loading]);
-
-  const resetToStart = () => {
-    setBlock(0);
-    setPage(1);
+  const handleNextPage = () => {
+    if (page < totalPages) setPage(page + 1);
   };
 
-  const goToBlock = (newBlock) => {
-    setBlock(newBlock);
-    setPage(newBlock * PAGES_PER_BLOCK + 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const handlePrevPage = () => {
+    if (page > 1) setPage(page - 1);
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    resetToStart();
-    setSearchQuery(searchInput.trim());
+  const toggleOrder = () => {
+    setOrderBy({
+      field: "title",
+      order: orderBy.order === "asc" ? "desc" : "asc",
+    });
   };
-
-  const clearFilters = () => {
-    setSearchInput("");
-    setSearchQuery("");
-    setMinPrice("");
-    setMaxPrice("");
-    setCategory("");
-    setProvince("");
-    setOrder("recent");
-    resetToStart();
-  };
-
-  const hasFilters =
-    searchQuery || minPrice || maxPrice || category || province || order !== "recent";
 
   return (
     <>
-      <NavBar />
+      <div className="navbar-container">
+        <NavBar onSearch={setSearchQuery} />
+      </div>
       <div className="home-container">
-        {/* Hero */}
-        <section className="home-hero">
-          <div className="home-hero-content">
-            <h1>
-              Comprá y vendé <span>lo que quieras</span>
-            </h1>
-            <p>
-              PopMart es el marketplace de la comunidad: publicá lo que quieras
-              vender y quien le interese se contacta con vos. Encontrá productos,
-              chateá con el vendedor y cerrá el trato.
-            </p>
-            <div className="home-hero-features">
-              <span className="hero-feature">📦 Publicá</span>
-              <span className="hero-feature">💬 Chateá</span>
-              <span className="hero-feature">🤝 Cerrá el trato</span>
-            </div>
-          </div>
-        </section>
+        <img
+          src={logoImage}
+          alt="PopMart logo"
+          style={{ width: 300, height: 300, marginRight: 5 }}
+        />
+        <br />
 
-        {/* Filtros + buscador */}
+        {/* Controles de Filtros */}
         <div className="filter-container">
-          <form className="filter-search" onSubmit={handleSearch}>
-            <FiSearch className="filter-search-icon" />
+          <label>
+            Precio Mínimo:
+            <input
+              type="number"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              placeholder="Precio mínimo"
+            />
+          </label>
+          <label>
+            Precio Máximo:
+            <input
+              type="number"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              placeholder="Precio máximo"
+            />
+          </label>
+          <label>
+            Categoría:
             <input
               type="text"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="¿Qué estás buscando?"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="Categoría"
             />
-            <button type="submit">Buscar</button>
-          </form>
-
-          <div className="filter-row">
-            <label className="filter-field">
-              <span>Precio mín.</span>
-              <input
-                type="number"
-                value={minPrice}
-                onChange={(e) => { setMinPrice(e.target.value); resetToStart(); }}
-                placeholder="$0"
-                min="0"
-              />
-            </label>
-            <label className="filter-field">
-              <span>Precio máx.</span>
-              <input
-                type="number"
-                value={maxPrice}
-                onChange={(e) => { setMaxPrice(e.target.value); resetToStart(); }}
-                placeholder="Sin límite"
-                min="0"
-              />
-            </label>
-            <label className="filter-field">
-              <span>Categoría</span>
-              <input
-                type="text"
-                list="filter-category-options"
-                value={category}
-                onChange={(e) => { setCategory(e.target.value); resetToStart(); }}
-                placeholder="Todas"
-              />
-              <datalist id="filter-category-options">
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c} />
-                ))}
-              </datalist>
-            </label>
-            <label className="filter-field">
-              <span>Provincia</span>
-              <input
-                type="text"
-                value={province}
-                onChange={(e) => { setProvince(e.target.value); resetToStart(); }}
-                placeholder="Todas"
-              />
-            </label>
-            <label className="filter-field">
-              <span>Ordenar por</span>
-              <select value={order} onChange={(e) => { setOrder(e.target.value); resetToStart(); }}>
-                <option value="recent">Más recientes</option>
-                <option value="price-asc">Precio: menor a mayor</option>
-                <option value="price-desc">Precio: mayor a menor</option>
-                <option value="title">Nombre (A-Z)</option>
-              </select>
-            </label>
-            {hasFilters && (
-              <button className="filter-clear" onClick={clearFilters} type="button">
-                <FiX /> Limpiar
-              </button>
-            )}
-          </div>
+          </label>
+          <button onClick={filterProducts}>Filtrar</button>
         </div>
 
-        {filteredProducts.length === 0 && !loading ? (
-          <p className="home-empty">No se encontraron productos.</p>
-        ) : (
-          <Cards allProducts={filteredProducts} />
-        )}
+        <button className="filter-button" onClick={toggleOrder}>
+          Ordenar por Título {orderBy.order === "asc" ? "↓" : "↑"}
+        </button>
 
-        {/* Sentinela del scroll infinito (dentro del bloque) */}
-        {canScrollMore && <div ref={sentinelRef} className="scroll-sentinel" />}
+        <Cards allProducts={filteredProducts} />
 
-        {loading && <p className="home-loading">Cargando productos...</p>}
-
-        {/* Paginación por bloques de 60 */}
-        {!canScrollMore && totalBlocks > 1 && (
-          <div className="pagination">
-            <button
-              className="pagination-button"
-              onClick={() => goToBlock(block - 1)}
-              disabled={block === 0}
-            >
-              Anterior
-            </button>
-            <span className="pagination-info">
-              Página {block + 1} de {totalBlocks}
-            </span>
-            <button
-              className="pagination-button"
-              onClick={() => goToBlock(block + 1)}
-              disabled={block >= totalBlocks - 1}
-            >
-              Siguiente
-            </button>
-          </div>
-        )}
+        <div className="pagination">
+          <button
+            className="pagination-button"
+            onClick={handlePrevPage}
+            disabled={page === 1}
+          >
+            Anterior
+          </button>
+          <button
+            className="pagination-button"
+            onClick={handleNextPage}
+            disabled={page === totalPages}
+          >
+            Siguiente
+          </button>
+        </div>
       </div>
-      <Footer />
     </>
   );
 };
